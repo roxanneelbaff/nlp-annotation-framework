@@ -1,0 +1,11 @@
+pandas==1.0.1
+spacy_arguing_lexicon==0.0.3
+numpy==1.19.5
+nltk==3.4.5
+gensim==3.8.1
+spacy==2.2.4
+wordcloud==1.6.0
+matplotlib==3.2.1
+empath==0.89
+pyLDAvis==3.3.1
+scikit_learn==1.1.1
