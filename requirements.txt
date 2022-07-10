@@ -1,6 +1,6 @@
 pandas==1.0.1
 spacy_arguing_lexicon==0.0.3
-numpy==1.19.5
+numpy
 nltk==3.4.5
 gensim==3.8.1
 spacy==2.2.4
