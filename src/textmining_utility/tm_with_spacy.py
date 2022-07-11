@@ -1,4 +1,3 @@
-import pandas as pd
 import spacy
 from spacy_arguing_lexicon import ArguingLexiconParser
 from empath import Empath

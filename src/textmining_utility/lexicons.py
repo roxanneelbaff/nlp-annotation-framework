@@ -3,11 +3,10 @@ import spacy
 from spacy_arguing_lexicon import ArguingLexiconParser
 from empath import Empath
 from spacy.language import Language
+import textmining_utility.config as config
 
 
-
-NRC_FILEPATH = r"...\lexicon\NRC-Emotion-Lexicon\NRC-Emotion-Lexicon-v0.92\NRC-Emotion-Lexicon-Wordlevel-v0.92.txt"
-def load_nrc_emotions(filepath=NRC_FILEPATH ):
+def load_nrc_emotions( ):
     """
         download the NRC emotion lexicon from http://sentiment.nrc.ca/lexicons-for-research/NRC-Emotion-Lexicon.zip
         unzip it and put it under "lexicon", in the same folder as this file, OR
@@ -15,7 +14,7 @@ def load_nrc_emotions(filepath=NRC_FILEPATH ):
         "NRC-Emotion-Lexicon/NRC-Emotion-Lexicon-v0.92/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt"
         NRC_FILEPATH = "../lexicon/NRC-Emotion-Lexicon/NRC-Emotion-Lexicon-v0.92/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt"
     """
-    emolex_df = pd.read_csv(filepath,  names=["word", "emotion", "association"],  sep='\t')
+    emolex_df = pd.read_csv(config.NRC_LEXICON_FOLDER, names=["word", "emotion", "association"], sep='\t')
     emolex_words = emolex_df.pivot(index='word', columns='emotion', values='association').reset_index()
     emolex_words.head()
     emolex_words.set_index(['word'], inplace=True)
@@ -57,14 +56,14 @@ def _count_nrc_emotions_and_sentiments(row, emotions,sentiments, nrc_df,
 
 
 
-def count_nrc_emotions_and_sentiments(df, text_column = 'text', path=NRC_FILEPATH, prefix='nrc_'):
+def count_nrc_emotions_and_sentiments(df, text_column = 'text', prefix='nrc_'):
     """
         'df': The dataframe that contains the data
         'text_column': The column name that contains the text that should be analyzed
         'path': The path to the nrc lexicon. Default: "lexicon/NRC-Emotion-Lexicon/NRC-Emotion-Lexicon-v0.92/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt"
         'prefix': the prefic to attach to the column names that contain the results. Default: nrc
     """
-    nrc_df, nrc_words_df = load_nrc_emotions(path)
+    nrc_df, nrc_words_df = load_nrc_emotions()
     
     emotions = list(nrc_df.emotion.unique() )
     emotions.remove('positive')
@@ -78,7 +77,7 @@ def count_nrc_emotions_and_sentiments(df, text_column = 'text', path=NRC_FILEPAT
     
 
 
-def apply_mpqa_sentences_subjectivity(row, path='annotations/opinionfinder'):
+def apply_mpqa_sentences_subjectivity(row, path=config.OPINION_FINDER_PATH):
     """
         # MPQA Subjectivity. Download opinion finder v2.0
         # Run command
@@ -119,7 +118,7 @@ def apply_mpqa_sentences_subjectivity(row, path='annotations/opinionfinder'):
     return row
 
 
-def count_mpqa_subj_obj(df, annotations_path = 'annotations/opinionfinder'):
+def count_mpqa_subj_obj(df, annotations_path = config.OPINION_FINDER_PATH):
     df = df.apply(apply_mpqa_sentences_subjectivity, args=(annotations_path,), axis=1)
     return df
 

@@ -10,19 +10,24 @@ license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 
+
 dependencies = [
-    "pandas>=1.2.0",
-    "spacy_arguing_lexicon>=0.0.3",
-    "numpy>=1.20",
-    "nltk>=3.4.5",
+    "pandas",
+    "spacy_arguing_lexicon",
+    "numpy",
+    "nltk",
     "gensim>=3.8.1",
-    "spacy>=2.2.4",
-    "wordcloud>=1.6.0",
-    "matplotlib>=3.2.1",
-    "empath>=0.89",
-    "pyLDAvis>=3.3.1",
-    "scikit_learn>=1.1.1"
+    "spacy",
+    "wordcloud",
+    "matplotlib",
+    "empath",
+    "pyLDAvis",
+    "scikit_learn"
 ]
 
 [project.urls]
 Home = "https://github.com/roxanneelbaff/textmining_tool"
+
+[tool.poetry]
+# ...
+include = ["lexicon"]

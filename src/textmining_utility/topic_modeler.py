@@ -17,6 +17,7 @@ from matplotlib import pyplot as plt
 from nltk.corpus import stopwords
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.colors as mcolors
+import textmining_utility.config as config
 
 
 import os
@@ -80,8 +81,8 @@ class topic_modeler():
         coherence_values = []
         model_list = []
         topics_num_arr = []
-        os.environ['MALLET_HOME'] = 'C:\\Mallet\\' # for windows make sure you put the mallet folder under C and unzip it
-        mallet_path = 'C:\\Mallet\\bin\\mallet'
+        os.environ['MALLET_HOME'] = config.MALLET_ROOT # for windows make sure you put the mallet folder under C and unzip it
+        mallet_path = config.MALLET_BIN
 
         corpus_to_train = self.corpus
         if corpus_type == 'tfidf':
@@ -112,6 +113,7 @@ class topic_modeler():
 
             else:
                 print('model {} is not supported. the models are *lda*, *mallet* and *nmf*')
+                return None, None
             model_list.append(model)
             topics_num_arr.append(num_topics)
             coherence_model = CoherenceModel(model=model, texts=self.data_lemmatized, dictionary=self.id2word, coherence='c_v')
