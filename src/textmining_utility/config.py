@@ -7,5 +7,3 @@ OPINION_FINDER_PATH = 'annotations/opinionfinder'
 
 MALLET_ROOT =os.path.join("C:", os.sep, "Mallet")
 MALLET_BIN = ('{}bin\\mallet').format(MALLET_ROOT)
-
-git 
