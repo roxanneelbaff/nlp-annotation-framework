@@ -60,3 +60,6 @@ def tokenize(text):
     for item in tokens:
         stems.append(PorterStemmer().stem(item))
     return stems
+
+def flatten_list(lst):
+    return list(itertools.chain(*lst))

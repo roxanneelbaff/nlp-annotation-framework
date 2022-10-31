@@ -15,10 +15,9 @@ import pyLDAvis.gensim_models   # don't skip this
 
 from matplotlib import pyplot as plt
 from nltk.corpus import stopwords
-from wordcloud import WordCloud, STOPWORDS
+from wordcloud import WordCloud
 import matplotlib.colors as mcolors
-import textmining_utility.config as config
-
+import textmining_utility as config
 
 import os
 

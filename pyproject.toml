@@ -22,7 +22,11 @@ dependencies = [
     "matplotlib",
     "empath",
     "pyLDAvis",
-    "scikit_learn"
+    "scikit_learn",
+    "torchvision",
+    "pyarrow",
+    "simpletransformers",
+    "tqdm"
 ]
 
 [project.urls]
