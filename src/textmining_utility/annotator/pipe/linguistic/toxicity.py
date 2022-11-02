@@ -1,3 +1,5 @@
+from statistics import mean
+
 import pandas as pd
 from simpletransformers.ner import NERModel
 from spacy.language import Language
@@ -21,7 +23,8 @@ class ToxicityFactory:
 
         self.transformer_nlp = pipeline('text-classification',
                                         model=model,
-                                        tokenizer=tokenizer)
+                                        tokenizer=tokenizer,
+                                        truncation=True, top_k=None)
 
         if not Span.has_extension("toxicity_neutral"):
             Span.set_extension("toxicity_neutral", default=None)
@@ -43,21 +46,17 @@ class ToxicityFactory:
 
         for sentence in doc.sents:
             txt = sentence.text
-            sent_toxicity_result = transformer_nlp(txt)
-
-            dominant_lbl = None
-            score_holder = 0.0
+            sent_toxicity_result = self.transformer_nlp(txt)
 
             for sent_toxicity_score in sent_toxicity_result:
                 label = sent_toxicity_score['label']
                 score = sent_toxicity_score['score']
-                if dominant_lbl is None or score_holder < score:
-                    dominant_lbl = label
-                    score_holder = score
 
                 all_scores[label].append(score)
 
                 sentence._.set(f"toxicity_{label}", score)
+            sent_scores = pd.DataFrame(sent_toxicity_result)
+            dominant_lbl = sent_scores.iloc[sent_scores["score"].argmax()]["label"]
             sentence._.set(f"toxicity_dominant", dominant_lbl)
             sentence_lbls.append(dominant_lbl)
 
@@ -65,7 +64,7 @@ class ToxicityFactory:
         doc_mean_df =  pd.DataFrame(
             [{
                 "label":x,
-                "raw_mean":  mean(y) }
+                "score_mean":  mean(y) if len(y)>0 else 0.0}
             for x, y in all_scores.items() ]).set_index("label")
 
 
@@ -75,11 +74,11 @@ class ToxicityFactory:
                 "count": sentence_lbls.count(x),
                 "ratio":round(sentence_lbls.count(x)/len(sentence_lbls),3)
             }
-            for x in set(classifications)
+            for x in set(sentence_lbls)
         ]).set_index("label")
 
         predictions = doc_scores_df.merge(doc_mean_df,
-                                         how='inner',
+                                         how='outer',
                                          left_index=True,
                                          right_index=True).reset_index().to_dict('records')
 

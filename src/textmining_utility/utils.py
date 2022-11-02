@@ -3,8 +3,12 @@
 Created on Mon Mar 23 09:12:51 2020
 
 """
+import importlib
+import itertools
 import os
 import hashlib
+import pkgutil
+
 import nltk
 import re
 from nltk.stem.porter import PorterStemmer
@@ -63,3 +67,23 @@ def tokenize(text):
 
 def flatten_list(lst):
     return list(itertools.chain(*lst))
+
+
+
+def load_module(module_name:str):
+    return importlib.import_module(module_name)
+
+def get_cls_from_path(path: str):
+    module_name, class_name = path.rsplit(".", 1)
+
+    cls = getattr(importlib.import_module(module_name), class_name)
+    return cls, class_name
+
+
+def load_sub_packages(package):
+    prefix = package.__name__ + "."
+    #print(f"prefix {prefix}")
+    for importer, modname, ispkg in pkgutil.iter_modules(package.__path__, prefix):
+        #print(f"Found submodule {modname} (is a package: {ispkg})" )
+        module = load_module(modname)
+        #print (f"Imported {module}")

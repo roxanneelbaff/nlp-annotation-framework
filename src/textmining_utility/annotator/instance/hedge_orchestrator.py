@@ -1,14 +1,12 @@
-import pandas
 import pandas as pd
-from pandas import DataFrame
 
-from textmining_utility.annotator.component.annotator import PipeOrchestrator
+from textmining_utility.annotator.orchestrator import PipeOrchestrator
 
 
 class HedgeOrchestrator(PipeOrchestrator):
 
 
-    def save_annotations(self, annotated_texts: list, folder_path="") -> pd.DataFrame:
+    def save_annotations(self, annotated_texts: list) -> pd.DataFrame:
         out_arr = []
         for doc, context in annotated_texts:
             row = {self.input_id: context[self.input_id]}
@@ -23,8 +21,8 @@ class HedgeOrchestrator(PipeOrchestrator):
 
                 row[f"hedge_dominant"] =res_df.iloc[res_df["size"].argmax()]["label"]
                 out_arr.append(row)
-        out_df: DataFrame = pd.DataFrame(out_arr)
-
+        out_df: pd.DataFrame = pd.DataFrame(out_arr)
+        out_df.fillna(0, inplace=True)
         return out_df
 
 

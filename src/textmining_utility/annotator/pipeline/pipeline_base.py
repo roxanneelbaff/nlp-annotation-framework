@@ -6,26 +6,27 @@ import dataclasses
 from pyArango.collection import Collection
 from spacy import Language
 
-from cag import logger
-from cag.graph_framework.components.annotators import registered_pipes
-from cag.graph_framework.components.annotators.element.orchestrator import PipeOrchestrator
-from cag.utils import utils
 import spacy
 from tqdm import tqdm
-from cag.utils.config import Config
+
+from textmining_utility import logger, utils
+import textmining_utility.annotator.registered_pipes as  registered
+from textmining_utility.annotator.orchestrator import PipeOrchestrator
+
 
 @dataclasses.dataclass
 class Pipe:
     name: str
+    save_output: bool = True
     is_spacy:bool = False
-    save_output:bool = True
+    is_native:bool = False
     pipe_id_or_func:str = None # set internally from toml
 
 
 
 
 class Pipeline(ABC):
-    REGISTERED_PIPE_CONFIGS: ClassVar = registered_pipes._dict
+    REGISTERED_PIPE_CONFIGS: ClassVar = registered._dict
 
     def _load_registered_pipes(self, load_default_pipe_configs:bool = True,
                  extended_pipe_configs:dict = None):
@@ -36,10 +37,11 @@ class Pipeline(ABC):
             registered_pipes = _copy
         return registered_pipes
     def __init__(self,
-                 database_config: Config,
                  input: "[Collection]" = None,
                  load_default_pipe_configs = True,
-                 extended_pipe_configs:dict = None
+                 extended_pipe_configs:dict = None,
+                 save_output= False,
+                 out_path = None
                  ):
         """
         The Pipeline class is responsible for taking a set of nodes as input, annotating them and saving them into
@@ -48,17 +50,18 @@ class Pipeline(ABC):
         """
 
         self.registered_pipes = self._load_registered_pipes(load_default_pipe_configs, extended_pipe_configs)
+        self.save_output = save_output
+        self.out_path = out_path
 
         self.pipe_instance_dict = {}
         self.pipeline:[Pipe] = []
 
 
-        self.database_config = database_config
-
         self.processed_input = None
         self.set_input(input)
 
         self.annotated_artifacts = None
+        self.out_df = None
 
         self.set_spacy_language_model()
 
@@ -108,7 +111,16 @@ class Pipeline(ABC):
         for pipe in tqdm(self.pipeline):
             if pipe.save_output:
                 logger.info("saving annotations of {}".format(pipe))
-                self.pipe_instance_dict[pipe.name].save_annotations(self.annotated_artifacts)
+                if self.out_df is None:
+                    self.out_df = self.pipe_instance_dict[pipe.name].save_annotations(self.annotated_artifacts)
+                else:
+                    _df = self.pipe_instance_dict[pipe.name].save_annotations(self.annotated_artifacts)
+                    self.out_df = self.out_df.merge(_df,
+                                                    how='outer',
+                                                    left_on="input_id",
+                                                    right_on="input_id")
+        if self.save_output:
+            self.out_df.to_parquet(self.out_path)
 
 
     ############################################
@@ -136,7 +148,8 @@ class Pipeline(ABC):
         #   en_core_web_trf (438)
 
     def add_annotation_pipe(self, pipe:Pipe=None,
-                            name:str="", save_output: bool = False, is_spacy:bool=False):
+                            name:str="", save_output: bool = False,
+                            is_spacy:bool=False, is_native: bool = False):
         """
             The add_annotation_pipe adds a pipe to the pipeline. the pipes are first in first out (FIFO).
             The corrisponding Annotator class (given from the toml)  to this pipe is initiated and saved, to be used
@@ -145,11 +158,16 @@ class Pipeline(ABC):
             *pipe_id_or_func*
             *pipeline*
         """
-        pipe = pipe if pipe is not None else Pipe(name, save_output, is_spacy)
+        pipe = pipe if pipe is not None else Pipe(name, save_output, is_spacy, is_native)
+
+        if is_native and is_spacy and not save_output:
+            pipe.pipe_id_or_func = name
+            self.pipeline.append(pipe)
+            return
 
         logger.info(f"adding pipe with name {pipe.name}")
-        cls, _ = utils.get_cls_from_path(self.registered_pipes[pipe.name][registered_pipes.PipeConfigKeys._orchestrator_class])
-        instance = cls(self.registered_pipes, orchestrator_config_id= pipe.name, conf=self.database_config)
+        cls, _ = utils.get_cls_from_path(self.registered_pipes[pipe.name][registered.PipeConfigKeys._orchestrator_class])
+        instance = cls(self.registered_pipes, orchestrator_config_id= pipe.name)
         self.pipe_instance_dict[pipe.name] = instance
 
         logger.info(f"adding pipe with code {instance.pipe_id_or_func}")

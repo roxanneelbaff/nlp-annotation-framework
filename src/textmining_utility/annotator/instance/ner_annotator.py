@@ -1,5 +1,6 @@
-from textmining_utility.annotator.component.annotator import PipeOrchestrator
+import pandas as pd
 
+from textmining_utility.annotator.orchestrator import PipeOrchestrator
 
 class NamedEntityPipeOrchestrator(PipeOrchestrator):
 

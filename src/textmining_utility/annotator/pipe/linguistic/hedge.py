@@ -1,5 +1,5 @@
 
-
+import pandas as pd
 from simpletransformers.ner import NERModel
 from spacy.language import Language
 from spacy.tokens import Token, Span, Doc
@@ -25,7 +25,7 @@ class HedgeFactory:
     def __call__(self, doc):
         results, _ = self.model.predict([doc.text])
 
-        df_ = pd.DataFrame({"word": [list(x.keys())[0] for x in utils.flatten_list(results)],
+        df_ = pd.DataFrame({"words": [list(x.keys())[0] for x in utils.flatten_list(results)],
                             "label": [list(x.values())[0] for x in utils.flatten_list(results)]})
         #df_ = df_[df_["label"] != "C"]
 
@@ -34,7 +34,7 @@ class HedgeFactory:
         count_labels["ratio"] = round(count_labels["size"] / count_labels["size"].sum(), 3)
 
         predictions = labels_words.merge(count_labels,
-                                         how='inner',
+                                         how='outer',
                                          left_index=True,
                                          right_index=True).reset_index().to_dict('records')
 
