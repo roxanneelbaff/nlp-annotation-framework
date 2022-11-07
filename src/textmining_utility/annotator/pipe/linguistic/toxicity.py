@@ -5,7 +5,7 @@ from simpletransformers.ner import NERModel
 from spacy.language import Language
 from spacy.tokens import Token, Span, Doc
 import torch
-from transformers import AutoConfig, AutoTokenizer, AutoModelForTokenClassification
+from transformers.utils import logging
 from transformers import pipeline
 from transformers import RobertaTokenizer, RobertaForSequenceClassification
 
@@ -16,6 +16,7 @@ from transformers import RobertaTokenizer, RobertaForSequenceClassification
 class ToxicityFactory:
     def __init__(self, nlp: Language, name: str):
         self.nlp = nlp
+        logging.disable_progress_bar()
 
         model_path = 'SkolkovoInstitute/roberta_toxicity_classifier'
         tokenizer = RobertaTokenizer.from_pretrained(model_path)

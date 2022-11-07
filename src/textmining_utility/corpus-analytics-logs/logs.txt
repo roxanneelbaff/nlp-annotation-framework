@@ -392,3 +392,127 @@
 02.11.2022 10:00 textmining-utility INFO     orchestrator was initialized successfully
 02.11.2022 10:00 textmining-utility INFO     adding pipe with code toxicity_component
 02.11.2022 10:00 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 14:19 textmining-utility INFO     adding pipe with name EmotionPipeOrchestrator
+03.11.2022 14:19 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.emotion
+03.11.2022 14:19 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 14:19 textmining-utility INFO     adding pipe with code emotion_hartmann_component
+03.11.2022 14:19 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 14:24 textmining-utility INFO     adding pipe with name EmotionPipeOrchestrator
+03.11.2022 14:24 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.emotion
+03.11.2022 14:24 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 14:24 textmining-utility INFO     adding pipe with code emotion_hartmann_component
+03.11.2022 14:24 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:25 textmining-utility INFO     adding pipe with name EmotionPipeOrchestrator
+03.11.2022 15:25 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.emotion
+03.11.2022 15:25 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:25 textmining-utility INFO     adding pipe with code emotion_hartmann_component
+03.11.2022 15:25 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:25 textmining-utility INFO     saving annotations of Pipe(name='EmotionPipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='emotion_hartmann_component')
+03.11.2022 15:26 textmining-utility INFO     adding pipe with name EmotionPipeOrchestrator
+03.11.2022 15:26 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.emotion
+03.11.2022 15:26 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:26 textmining-utility INFO     adding pipe with code emotion_hartmann_component
+03.11.2022 15:26 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+03.11.2022 15:26 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+03.11.2022 15:26 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:26 textmining-utility INFO     adding pipe with code hedge_component
+03.11.2022 15:26 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:27 textmining-utility INFO     saving annotations of Pipe(name='EmotionPipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='emotion_hartmann_component')
+03.11.2022 15:27 textmining-utility INFO     saving annotations of Pipe(name='HedgePipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='hedge_component')
+03.11.2022 15:32 textmining-utility INFO     adding pipe with name EmotionPipeOrchestrator
+03.11.2022 15:32 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.emotion
+03.11.2022 15:32 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:32 textmining-utility INFO     adding pipe with code emotion_hartmann_component
+03.11.2022 15:32 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+03.11.2022 15:32 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+03.11.2022 15:32 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:32 textmining-utility INFO     adding pipe with code hedge_component
+03.11.2022 15:32 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:33 textmining-utility INFO     saving annotations of Pipe(name='EmotionPipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='emotion_hartmann_component')
+03.11.2022 15:33 textmining-utility INFO     saving annotations of Pipe(name='HedgePipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='hedge_component')
+03.11.2022 15:34 textmining-utility INFO     adding pipe with name EmotionPipeOrchestrator
+03.11.2022 15:34 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.emotion
+03.11.2022 15:34 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:34 textmining-utility INFO     adding pipe with code emotion_hartmann_component
+03.11.2022 15:34 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:34 textmining-utility INFO     saving annotations of Pipe(name='EmotionPipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='emotion_hartmann_component')
+03.11.2022 15:36 textmining-utility INFO     adding pipe with name EmotionPipeOrchestrator
+03.11.2022 15:36 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.emotion
+03.11.2022 15:36 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:36 textmining-utility INFO     adding pipe with code emotion_hartmann_component
+03.11.2022 15:36 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+03.11.2022 15:36 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+03.11.2022 15:36 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:36 textmining-utility INFO     adding pipe with code hedge_component
+03.11.2022 15:36 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:37 textmining-utility INFO     saving annotations of Pipe(name='EmotionPipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='emotion_hartmann_component')
+03.11.2022 15:37 textmining-utility INFO     saving annotations of Pipe(name='HedgePipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='hedge_component')
+03.11.2022 15:47 textmining-utility INFO     adding pipe with name ToxicityOrchestrator
+03.11.2022 15:47 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.toxicity
+03.11.2022 15:47 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:47 textmining-utility INFO     adding pipe with code toxicity_component
+03.11.2022 15:47 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:47 textmining-utility INFO     saving annotations of Pipe(name='ToxicityOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='toxicity_component')
+03.11.2022 15:47 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+03.11.2022 15:47 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+03.11.2022 15:47 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:47 textmining-utility INFO     adding pipe with code hedge_component
+03.11.2022 15:47 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:48 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+03.11.2022 15:48 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+03.11.2022 15:48 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:48 textmining-utility INFO     adding pipe with code hedge_component
+03.11.2022 15:48 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:49 textmining-utility INFO     saving annotations of Pipe(name='HedgePipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='hedge_component')
+03.11.2022 15:56 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+03.11.2022 15:56 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+03.11.2022 15:56 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 15:56 textmining-utility INFO     adding pipe with code hedge_component
+03.11.2022 15:56 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 15:57 textmining-utility INFO     saving annotations of Pipe(name='HedgePipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='hedge_component')
+03.11.2022 16:58 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+03.11.2022 16:58 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+03.11.2022 16:58 textmining-utility INFO     orchestrator was initialized successfully
+03.11.2022 16:58 textmining-utility INFO     adding pipe with code hedge_component
+03.11.2022 16:58 textmining-utility INFO     Defining pipe default and spacy stacks
+03.11.2022 16:59 textmining-utility INFO     saving annotations of Pipe(name='HedgePipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='hedge_component')
+04.11.2022 12:47 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+04.11.2022 12:47 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+04.11.2022 12:47 textmining-utility INFO     orchestrator was initialized successfully
+04.11.2022 12:47 textmining-utility INFO     adding pipe with code hedge_component
+04.11.2022 12:47 textmining-utility INFO     Defining pipe default and spacy stacks
+04.11.2022 12:49 textmining-utility INFO     saving annotations of Pipe(name='HedgePipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='hedge_component')
+04.11.2022 12:59 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+04.11.2022 12:59 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+04.11.2022 12:59 textmining-utility INFO     orchestrator was initialized successfully
+04.11.2022 12:59 textmining-utility INFO     adding pipe with code hedge_component
+04.11.2022 12:59 textmining-utility INFO     Defining pipe default and spacy stacks
+04.11.2022 13:30 textmining-utility INFO     adding pipe with name EmotionPipeOrchestrator
+04.11.2022 13:30 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.emotion
+04.11.2022 13:30 textmining-utility INFO     orchestrator was initialized successfully
+04.11.2022 13:30 textmining-utility INFO     adding pipe with code emotion_hartmann_component
+04.11.2022 13:30 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+04.11.2022 13:30 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+04.11.2022 13:30 textmining-utility INFO     orchestrator was initialized successfully
+04.11.2022 13:30 textmining-utility INFO     adding pipe with code hedge_component
+04.11.2022 13:30 textmining-utility INFO     adding pipe with name ToxicityOrchestrator
+04.11.2022 13:30 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.toxicity
+04.11.2022 13:30 textmining-utility INFO     orchestrator was initialized successfully
+04.11.2022 13:30 textmining-utility INFO     adding pipe with code toxicity_component
+04.11.2022 13:30 textmining-utility INFO     Defining pipe default and spacy stacks
+04.11.2022 13:34 textmining-utility INFO     saving annotations of Pipe(name='EmotionPipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='emotion_hartmann_component')
+04.11.2022 13:34 textmining-utility INFO     saving annotations of Pipe(name='HedgePipeOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='hedge_component')
+04.11.2022 13:34 textmining-utility INFO     saving annotations of Pipe(name='ToxicityOrchestrator', save_output=True, is_spacy=True, is_native=False, pipe_id_or_func='toxicity_component')
+06.11.2022 09:04 textmining-utility INFO     adding pipe with name EmotionPipeOrchestrator
+06.11.2022 09:04 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.emotion
+06.11.2022 09:04 textmining-utility INFO     orchestrator was initialized successfully
+06.11.2022 09:04 textmining-utility INFO     adding pipe with code emotion_hartmann_component
+06.11.2022 09:04 textmining-utility INFO     adding pipe with name HedgePipeOrchestrator
+06.11.2022 09:04 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.hedge
+06.11.2022 09:04 textmining-utility INFO     orchestrator was initialized successfully
+06.11.2022 09:04 textmining-utility INFO     adding pipe with code hedge_component
+06.11.2022 09:04 textmining-utility INFO     adding pipe with name ToxicityOrchestrator
+06.11.2022 09:04 textmining-utility DEBUG    loading textmining_utility.annotator.pipe.linguistic.toxicity
+06.11.2022 09:04 textmining-utility INFO     orchestrator was initialized successfully
+06.11.2022 09:04 textmining-utility INFO     adding pipe with code toxicity_component
+06.11.2022 09:04 textmining-utility INFO     Defining pipe default and spacy stacks

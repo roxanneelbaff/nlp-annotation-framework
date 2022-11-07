@@ -1,16 +1,15 @@
-from simpletransformers.ner import NERModel
 from spacy.language import Language
-from spacy.tokens import Token, Span, Doc
-import torch
+from spacy.tokens import  Span, Doc
 from transformers import AutoConfig, AutoTokenizer, AutoModelForTokenClassification
 from transformers import pipeline
-
+from transformers.utils import  logging
 # REQUIRES sentencizer
 # https://huggingface.co/m3hrdadfi/typo-detector-distilbert-en?text=The+review+thoroughla+assessed+all+aspects+of+JLENS+SuR+and+CPG+esign+maturit+and+confidence+.
 @Language.factory("typo_component")
 class TypoFactory:
     def __init__(self, nlp: Language, name: str):
         self.nlp = nlp
+        logging.disable_progress_bar()
 
         model_name_or_path = "m3hrdadfi/typo-detector-distilbert-en"
         tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)

@@ -1,6 +1,5 @@
 
 import pandas as pd
-import textmining_utility.annotator.instance.emotion_annotator
 
 from textmining_utility.annotator.orchestrator import PipeOrchestrator
 

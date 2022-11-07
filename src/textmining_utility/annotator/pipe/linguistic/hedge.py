@@ -1,28 +1,32 @@
 
 import pandas as pd
-from simpletransformers.ner import NERModel
+from simpletransformers.ner import NERModel, NERArgs
 from spacy.language import Language
 from spacy.tokens import Token, Span, Doc
-
+from transformers.utils import logging
 import textmining_utility.utils as utils
 @Language.factory("hedge_component")
 class HedgeFactory:
     def __init__(self, nlp: Language, name: str):
         self.nlp = nlp
+        logging.disable_progress_bar()
 
         # ? HEDGEhog ?: BERT-based multi-class uncertainty cues recognition
         # https://huggingface.co/jeniakim/hedgehog
+        ner_args = NERArgs()
+        ner_args.silent = True
         self.model = NERModel(
             'bert',
             'jeniakim/hedgehog',
             use_cuda=False,
-            labels=["C", "D", "E", "I", "N"],
+            labels=["C", "D", "E", "I", "N"], args=ner_args
         )
 
         if not Doc.has_extension("hedge"):
             Doc.set_extension("hedge", default=None)
 
     def __call__(self, doc):
+        logging.disable_progress_bar()
         results, _ = self.model.predict([doc.text])
 
         df_ = pd.DataFrame({"words": [list(x.keys())[0] for x in utils.flatten_list(results)],

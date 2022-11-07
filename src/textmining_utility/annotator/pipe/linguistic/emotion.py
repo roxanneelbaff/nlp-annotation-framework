@@ -6,6 +6,8 @@ from spacy.tokens import Token, Span, Doc
 import torch
 from transformers import AutoConfig, AutoTokenizer, AutoModelForTokenClassification
 from transformers import pipeline
+from transformers.utils import logging
+
 import pandas as pd
 # REQUIRES sentencizer
 
@@ -15,6 +17,7 @@ class EmotionHartmannFactory:
     _EMOTIONS = ["anger", "disgust", "fear", "joy", "neutral", "sadness", "surprise"]
     def __init__(self, nlp: Language, name: str):
         self.nlp = nlp
+        logging.disable_progress_bar() # https://huggingface.co/docs/transformers/main/en/main_classes/logging#transformers.utils.logging.disable_default_handler
 
         self.transformer_nlp = pipeline(
             "text-classification",
