@@ -87,7 +87,7 @@ class Pipeline(ABC):
             pipe_stack = pipe_stacks.get()
             if pipe_stack['stack_type'] == 'spacy':
                 nlp = self.init_spacy_nlp(pipe_stack['stack'])
-                out = list(nlp.pipe(input, as_tuples=True, n_process=-1))
+                out = list(nlp.pipe(input, as_tuples=True, n_process=3, batch_size=100))
                 input = out
             else:
                 while pipe_stack['stack']:
