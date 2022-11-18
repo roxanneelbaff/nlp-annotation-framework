@@ -87,7 +87,7 @@ class Pipeline(ABC):
             pipe_stack = pipe_stacks.get()
             if pipe_stack['stack_type'] == 'spacy':
                 nlp = self.init_spacy_nlp(pipe_stack['stack'])
-                out = list(nlp.pipe(input, as_tuples=True, n_process=3, batch_size=100))
+                out = list(nlp.pipe(input, as_tuples=True, n_process=-1, batch_size=1000))
                 input = out
             else:
                 while pipe_stack['stack']:
@@ -204,7 +204,7 @@ class Pipeline(ABC):
         return pipe_stack
 
     def init_spacy_nlp(self, subpipeline) -> Language:
-        nlp = spacy.load(self.spacy_language_model, disable=["ner"])
+        nlp = spacy.load(self.spacy_language_model, disable=["tok2vec", "tagger", "parser", "attribute_ruler", "lemmatizer", "ner"])
         for pipe in subpipeline:
             if not nlp.has_pipe(pipe.pipe_id_or_func):
                 if pipe.pipe_id_or_func in nlp.disabled:
