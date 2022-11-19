@@ -35,3 +35,5 @@ Home = "https://github.com/roxanneelbaff/textmining_tool"
 [tool.poetry]
 # ...
 include = ["lexicon"]
+
+# to republish: flit build and the flit publish

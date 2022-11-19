@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 from typing import ClassVar
 
 import dataclasses
-from pyArango.collection import Collection
 from spacy import Language
 
 import spacy
@@ -37,7 +36,7 @@ class Pipeline(ABC):
             registered_pipes = _copy
         return registered_pipes
     def __init__(self,
-                 input: "[Collection]" = None,
+                 input = None,
                  load_default_pipe_configs = True,
                  extended_pipe_configs:dict = None,
                  save_output= False,
@@ -131,7 +130,7 @@ class Pipeline(ABC):
         self.annotated_artifacts = None
         self.annotated_artifacts = None
 
-    def set_input(self, nodes: [Collection]):
+    def set_input(self, nodes):
         self.input = nodes
         if self.input is not None:
             self.processed_input = self.process_input()
