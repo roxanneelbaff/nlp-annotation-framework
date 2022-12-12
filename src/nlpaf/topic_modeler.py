@@ -17,7 +17,7 @@ from matplotlib import pyplot as plt
 from nltk.corpus import stopwords
 from wordcloud import WordCloud
 import matplotlib.colors as mcolors
-import textmining_utility as config
+import nlpaf as config
 
 import os
 
