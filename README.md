@@ -16,3 +16,6 @@
     <img alt="Badge: Citation File Format Inside" src="https://img.shields.io/badge/-citable%20software-green" target="_blank" />
   </a>-->
 </p>
+
+> `nlpaf` is a Python Library offering an architectural framework and tools to extract features from textual data.
+
