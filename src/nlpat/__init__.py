@@ -10,12 +10,12 @@ import os
 filepath = resource_filename(__name__, 'lexicons/')
 
 
-logs_folder = os.path.join(os.path.dirname(__file__), 'corpus-analytics-logs')
+logs_folder = os.path.join(os.path.dirname(__file__), 'nlpaf')
 Path(logs_folder).mkdir(parents=True, exist_ok=True)
 
 # Create a custom logger
 global logger
-logger = logging.getLogger("textmining-utility")
+logger = logging.getLogger("nlpaf")
 
 # Create handlers
 console_handler = logging.StreamHandler()

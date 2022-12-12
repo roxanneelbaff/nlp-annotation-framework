@@ -3,7 +3,7 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "nlptool"
+name = "nlpaf"
 version = "1.0.0"
 description='Implementation of different NLP tools.'
 readme = "README.md"
@@ -40,7 +40,7 @@ dependencies = [
 ]
 
 [project.urls]
-Home = "https://github.com/roxanneelbaff/textmining_tool"
+Home = "https://github.com/roxanneelbaff/nlp-annotation-framework"
 
 [tool.poetry]
 # ...
