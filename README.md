@@ -19,3 +19,20 @@
 
 > `nlpaf` is a Python Library offering an architectural framework and tools to extract features from textual data.
 
+____
+
+## Installation
+
+### Direct install via pip 
+
+The package can also be installed directly via pip.
+```
+pip install nlpaf
+```
+
+### Manual cloning
+Clone the repository, go to the root folder and then run:
+
+```
+pip install -e .
+```
