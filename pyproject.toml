@@ -3,12 +3,22 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "textmining_utility"
-authors = [{name = "Roxanne El Baff", email = "roxanneelbaff@gmail.com"}]
+name = "nlptool"
+version = "1.0.0"
+description='Implementation of different NLP tools.'
 readme = "README.md"
-license = {file = "LICENSE"}
-classifiers = ["License :: OSI Approved :: MIT License"]
-dynamic = ["version", "description"]
+authors = [{ name = "Roxanne El Baff", email = "roxanne.elbaff@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    'Development Status :: 3 - Alpha',
+    'Intended Audience :: Science/Research',
+
+]
+keywords=['nlp', 'feature extraction', 'topic modeling']
+
 
 
 dependencies = [
@@ -22,7 +32,7 @@ dependencies = [
     "matplotlib",
     "empath",
     "pyLDAvis",
-    "scikit_learn",
+    "scikit-learn",
     "torchvision",
     "pyarrow",
     "simpletransformers",

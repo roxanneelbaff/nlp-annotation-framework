@@ -8,4 +8,4 @@ wordcloud
 matplotlib
 empath>=0.89
 pyLDAvis>=3.3.1
-scikit_learn>=1.1.1
+scikit-learn>=1.1.1

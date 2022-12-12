@@ -1,6 +1,6 @@
 """textmining package that uses existing libraries"""
 
-__version__ = "0.4.0"
+__version__ = "0.5"
 
 from pkg_resources import resource_filename
 import logging
