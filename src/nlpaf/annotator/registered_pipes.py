@@ -27,9 +27,9 @@ _dict["NamedEntityPipeOrchestrator"] = {
 }
 
 _dict["EmotionPipeOrchestrator"] = {
-    PipeConfigKeys._orchestrator_class : "textmining_utility.annotator.instance.emotion_annotator.EmotionPipeOrchestrator",
+    PipeConfigKeys._orchestrator_class : "nlpaf.annotator.instance.emotion_annotator.EmotionPipeOrchestrator",
     PipeConfigKeys._pipe_id_or_func : "emotion_hartmann_component", # id in case of space, function name otherwise
-    PipeConfigKeys._pipe_path : "textmining_utility.annotator.pipe.linguistic.emotion",  # leave empty if the pipe is a spacy native pipe, otherwise provide the path of where the pipe_id_or_func exists
+    PipeConfigKeys._pipe_path : "nlpaf.annotator.pipe.linguistic.emotion",  # leave empty if the pipe is a spacy native pipe, otherwise provide the path of where the pipe_id_or_func exists
     PipeConfigKeys._level : "singleton",  # node or set
     PipeConfigKeys._data_type : "text",  # for now we support text - later url, image
     PipeConfigKeys._annotated_column : "text",
@@ -38,9 +38,9 @@ _dict["EmotionPipeOrchestrator"] = {
 }
 
 _dict["HedgePipeOrchestrator"] = {
-    PipeConfigKeys._orchestrator_class : "textmining_utility.annotator.instance.hedge_orchestrator.HedgeOrchestrator",
+    PipeConfigKeys._orchestrator_class : "nlpaf.annotator.instance.hedge_orchestrator.HedgeOrchestrator",
     PipeConfigKeys._pipe_id_or_func : "hedge_component", # id in case of space, function name otherwise
-    PipeConfigKeys._pipe_path : "textmining_utility.annotator.pipe.linguistic.hedge",  # leave empty if the pipe is a spacy native pipe, otherwise provide the path of where the pipe_id_or_func exists
+    PipeConfigKeys._pipe_path : "nlpaf.annotator.pipe.linguistic.hedge",  # leave empty if the pipe is a spacy native pipe, otherwise provide the path of where the pipe_id_or_func exists
     PipeConfigKeys._level : "singleton",  # node or set
     PipeConfigKeys._data_type : "text",  # for now we support text - later url, image
     PipeConfigKeys._annotated_column : "text",
@@ -49,9 +49,9 @@ _dict["HedgePipeOrchestrator"] = {
 }
 
 _dict["ToxicityOrchestrator"] = {
-    PipeConfigKeys._orchestrator_class : "textmining_utility.annotator.instance.toxicity_orchestrator.ToxicityOrchestrator",
+    PipeConfigKeys._orchestrator_class : "nlpaf.annotator.instance.toxicity_orchestrator.ToxicityOrchestrator",
     PipeConfigKeys._pipe_id_or_func : "toxicity_component", # id in case of space, function name otherwise
-    PipeConfigKeys._pipe_path : "textmining_utility.annotator.pipe.linguistic.toxicity",  # leave empty if the pipe is a spacy native pipe, otherwise provide the path of where the pipe_id_or_func exists
+    PipeConfigKeys._pipe_path : "nlpaf.annotator.pipe.linguistic.toxicity",  # leave empty if the pipe is a spacy native pipe, otherwise provide the path of where the pipe_id_or_func exists
     PipeConfigKeys._level : "singleton",  # node or set
     PipeConfigKeys._data_type : "text",  # for now we support text - later url, image
     PipeConfigKeys._annotated_column : "text",

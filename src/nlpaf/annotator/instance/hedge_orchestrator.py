@@ -1,6 +1,6 @@
 import pandas as pd
 
-from textmining_utility.annotator.orchestrator import PipeOrchestrator
+from nlpaf.annotator.orchestrator import PipeOrchestrator
 
 
 class HedgeOrchestrator(PipeOrchestrator):

@@ -1,5 +1,5 @@
-from textmining_utility import logger
-from textmining_utility.annotator.orchestrator import PipeOrchestrator
+from nlpaf import logger
+from nlpaf.annotator.orchestrator import PipeOrchestrator
 
 
 class DummyDefaultPipeOrchestrator(PipeOrchestrator):

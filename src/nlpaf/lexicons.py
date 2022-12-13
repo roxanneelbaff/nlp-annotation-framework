@@ -3,7 +3,7 @@ import spacy
 from spacy_arguing_lexicon import ArguingLexiconParser
 from empath import Empath
 from spacy.language import Language
-import textmining_utility.config as config
+import nlpaf.config as config
 
 
 def load_nrc_emotions( ):

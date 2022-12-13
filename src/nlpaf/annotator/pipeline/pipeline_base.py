@@ -8,9 +8,9 @@ from spacy import Language
 import spacy
 from tqdm import tqdm
 
-from textmining_utility import logger, utils
-import textmining_utility.annotator.registered_pipes as  registered
-from textmining_utility.annotator.orchestrator import PipeOrchestrator
+from nlpaf import logger, utils
+import nlpaf.annotator.registered_pipes as  registered
+from nlpaf.annotator.orchestrator import PipeOrchestrator
 
 
 @dataclasses.dataclass

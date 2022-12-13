@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 from typing import ClassVar, Dict
 
 import pandas as pd
-import textmining_utility.annotator.registered_pipes as registered
-from textmining_utility import logger, utils
+import nlpaf.annotator.registered_pipes as registered
+from nlpaf import logger, utils
 
 
 class PipeOrchestrator(ABC):

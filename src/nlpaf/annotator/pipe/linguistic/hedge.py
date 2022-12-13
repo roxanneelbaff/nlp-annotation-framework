@@ -4,7 +4,7 @@ from simpletransformers.ner import NERModel, NERArgs
 from spacy.language import Language
 from spacy.tokens import Token, Span, Doc
 from transformers.utils import logging
-import textmining_utility.utils as utils
+import nlpaf.utils as utils
 @Language.factory("hedge_component")
 class HedgeFactory:
     def __init__(self, nlp: Language, name: str):
