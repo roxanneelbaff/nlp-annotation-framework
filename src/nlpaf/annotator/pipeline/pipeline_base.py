@@ -65,6 +65,7 @@ class Pipeline(ABC):
 
         self.set_spacy_language_model()
         self.pipe_stacks = None
+        self.stack = []
 
     ############################################
     #####      ABSTRACT METHODS            #####
@@ -81,17 +82,14 @@ class Pipeline(ABC):
     ############################################
     def init_pipe_stack(self):
         self.pipe_stacks = self.get_pipe_stacks()
-    def annotate(self):
-        
-
-        input = self.processed_input
-        out = None
+        self.stack =[]
         while not self.pipe_stacks.empty():
             pipe_stack = self.pipe_stacks.get()
             if pipe_stack['stack_type'] == 'spacy':
                 nlp = self.init_spacy_nlp(pipe_stack['stack'])
-                out = list(nlp.pipe(input, as_tuples=True, n_process=-1, batch_size=3000))
-                input = out
+                self.stack.append({"type": "spacy", "component": nlp})
+                #out = list(nlp.pipe(input, as_tuples=True, n_process=-1, batch_size=3000))
+                #input = out
             else:
                 while pipe_stack['stack']:
                     current_pipe: Pipe = pipe_stack['stack'].pop(0)
@@ -102,8 +100,21 @@ class Pipeline(ABC):
                                      "provide the implementation within the pipe path and a function with the name equivalent to the "
                                      "'pipe' name")
                     else:
-                        out = pipe_func(input)
-                        input = out
+                        self.stack.append({"type": "default", "component": pipe_func})
+        return self.stack
+                        #out = pipe_func(input)
+                        #input = out
+        #self.annotated_artifacts = out
+    def annotate(self):
+        input = self.processed_input
+        for s in self.stack:
+            _component = s['component']
+            if s['type'] == 'spacy':
+                out = list(_component.pipe(input, as_tuples=True, n_process=-1, batch_size=3000))
+                input = out
+            else:
+                out = _component(input)
+                input = out
         self.annotated_artifacts = out
 
 
