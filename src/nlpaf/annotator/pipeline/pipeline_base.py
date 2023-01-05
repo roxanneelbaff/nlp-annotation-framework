@@ -101,24 +101,29 @@ class Pipeline(ABC):
                                      "'pipe' name")
                     else:
                         self.stack.append({"type": "default", "component": pipe_func})
+        logger.debug(f"The stack has {len(self.stack)} component(s).")
         return self.stack
                         #out = pipe_func(input)
                         #input = out
         #self.annotated_artifacts = out
     def annotate(self):
         input = self.processed_input
+        logger.debug("Annotating - looping over stack")
         for s in self.stack:
+            logger.debug(f"executing component of type {s['type']} ")
             _component = s['component']
             if s['type'] == 'spacy':
-                out = list(_component.pipe(input, as_tuples=True, n_process=-1, batch_size=3000))
+                out = list(_component.pipe(input, as_tuples=True, n_process=-1))
                 input = out
             else:
                 out = _component(input)
                 input = out
+        logger.debug("Ran all stack components")
         self.annotated_artifacts = out
 
 
     def save(self):
+        logger.debug("Saving annotations..")
         if self.annotated_artifacts is None:
             logger.error("Nothing to save, call annotate before saving")
             pass
@@ -134,8 +139,9 @@ class Pipeline(ABC):
                                                     left_on="input_id",
                                                     right_on="input_id")
         if self.save_output:
+            logger.debug("Saving to parquet..")
             self.out_df.to_parquet(self.out_path)
-
+        logger.debug("saved annotations")
 
     ############################################
     #####           SETTERS                #####
