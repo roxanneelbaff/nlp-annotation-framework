@@ -2,6 +2,7 @@
 import pandas as pd
 
 from nlpaf.annotator.orchestrator import PipeOrchestrator
+from nlpaf.util.timer import Timer
 
 
 
@@ -10,6 +11,8 @@ class EmotionPipeOrchestrator(PipeOrchestrator):
 
 
     def save_annotations(self, annotated_texts: list) -> pd.DataFrame:
+        #t = Timer(name="emotion-save-annotations")
+        #t.start()
         out_arr = []
         for doc, context in annotated_texts:
             row = {self.input_id: context[self.input_id]}
@@ -24,6 +27,7 @@ class EmotionPipeOrchestrator(PipeOrchestrator):
                 out_arr.append(row)
         out_df: pd.DataFrame = pd.DataFrame(out_arr)
         out_df.fillna(0, inplace=True)
+        #t.stop()
         return out_df
 
 

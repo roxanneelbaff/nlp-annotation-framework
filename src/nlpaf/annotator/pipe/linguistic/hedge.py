@@ -2,9 +2,12 @@
 import pandas as pd
 from simpletransformers.ner import NERModel, NERArgs
 from spacy.language import Language
-from spacy.tokens import Token, Span, Doc
+from spacy.tokens import  Doc
 from transformers.utils import logging
 import nlpaf.utils as utils
+from nlpaf.util.timer import Timer
+
+
 @Language.factory("hedge_component")
 class HedgeFactory:
     def __init__(self, nlp: Language, name: str):
@@ -26,6 +29,8 @@ class HedgeFactory:
             Doc.set_extension("hedge", default=None)
 
     def __call__(self, doc):
+        t = Timer("Hedge")
+        t.start()
         logging.disable_progress_bar()
         results, _ = self.model.predict([doc.text])
 
@@ -43,5 +48,5 @@ class HedgeFactory:
                                          right_index=True).reset_index().to_dict('records')
 
         doc._.set("hedge", predictions)
-
+        t.stop()
         return doc

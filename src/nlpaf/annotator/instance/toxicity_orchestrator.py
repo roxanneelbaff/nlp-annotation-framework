@@ -13,10 +13,10 @@ class ToxicityOrchestrator(PipeOrchestrator):
             row = {self.input_id: context[self.input_id]}
 
             if doc._.toxicity is not None :
-                for hedge_dict in doc._.toxicity:
-                    row[f"toxicity_{hedge_dict['label']}_count"] = hedge_dict['count']
-                    row[f"toxicity_{hedge_dict['label']}_ratio"] = hedge_dict['ratio']
-                    row[f"toxicity_{hedge_dict['label']}"] = hedge_dict['score_mean']
+                for toxicity_dict in doc._.toxicity:
+                    row[f"toxicity_{toxicity_dict['label']}_count"] = toxicity_dict['count']
+                    row[f"toxicity_{toxicity_dict['label']}_ratio"] = toxicity_dict['ratio']
+                    row[f"toxicity_{toxicity_dict['label']}"] = toxicity_dict['score_mean']
 
                 res_df = pd.DataFrame(doc._.toxicity  )
 

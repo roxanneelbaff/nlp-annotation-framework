@@ -9,21 +9,26 @@ from transformers import pipeline
 from transformers.utils import logging
 
 import pandas as pd
+from nlpaf.util.timer import Timer
 # REQUIRES sentencizer
 
 @Language.factory("emotion_hartmann_component")
 class EmotionHartmannFactory:
     _EMOTION_DOC_KEY: str = "emotions"
     _EMOTIONS = ["anger", "disgust", "fear", "joy", "neutral", "sadness", "surprise"]
+    
     def __init__(self, nlp: Language, name: str):
         self.nlp = nlp
         logging.disable_progress_bar() # https://huggingface.co/docs/transformers/main/en/main_classes/logging#transformers.utils.logging.disable_default_handler
-
+        print("init emotion_hartmann_component")
+        #t = Timer()
+        #t.start()
         self.transformer_nlp = pipeline(
             "text-classification",
             model="j-hartmann/emotion-english-distilroberta-base",
             truncation=True, top_k=None
         )
+        #t.stop()
         if not Doc.has_extension("emotion_label"):
             Doc.set_extension("emotion_label", default=None)
         if not Doc.has_extension("emotions"):
@@ -36,17 +41,24 @@ class EmotionHartmannFactory:
             Span.set_extension(f"emotion_dominant", default=None)
 
     def __call__(self, doc):
-
+        #all_ = Timer(name="emotionall")
+        #all_.start()
         all_scores = {}
         for em in EmotionHartmannFactory._EMOTIONS:
             all_scores[em] = []
 
         sentence_lbls = []
 
+        #outer = Timer(name="one text")
+        #outer.start()
         for sentence in doc.sents:
             txt = sentence.text
+            #print(f"printing sent: {txt}")
+            #t = Timer(name="one-sentence")
+            #t.start()
             sent_emotion_result = self.transformer_nlp(txt)
-
+            #t.stop()
+            #t.start()
             res_df = pd.DataFrame(sent_emotion_result)
 
             for sent_emotion_score in sent_emotion_result:
@@ -59,6 +71,8 @@ class EmotionHartmannFactory:
             dominant_lbl = res_df.iloc[res_df["score"].argmax()]["label"]
             sentence._.set(f"emotion_dominant", dominant_lbl)
             sentence_lbls.append(dominant_lbl)
+            #t.stop()
+        #outer.stop()
 
         doc_mean_df = pd.DataFrame(
             [{
@@ -83,4 +97,5 @@ class EmotionHartmannFactory:
 
         doc._.set("emotions", predictions_df.reset_index().to_dict('records'))
         doc._.set("emotion_label", predictions_df.reset_index().iloc[predictions_df["count"].argmax()]["label"])
+        #all_.stop()
         return doc

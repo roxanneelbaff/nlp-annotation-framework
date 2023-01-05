@@ -11,6 +11,7 @@ from tqdm import tqdm
 from nlpaf import logger, utils
 import nlpaf.annotator.registered_pipes as  registered
 from nlpaf.annotator.orchestrator import PipeOrchestrator
+from nlpaf.util.timer import Timer
 
 
 @dataclasses.dataclass
@@ -53,7 +54,7 @@ class Pipeline(ABC):
         self.out_path = out_path
 
         self.pipe_instance_dict = {}
-        self.pipeline:[Pipe] = []
+        self.pipeline:list = []
 
 
         self.processed_input = None
@@ -63,6 +64,7 @@ class Pipeline(ABC):
         self.out_df = None
 
         self.set_spacy_language_model()
+        self.pipe_stacks = None
 
     ############################################
     #####      ABSTRACT METHODS            #####
@@ -77,16 +79,18 @@ class Pipeline(ABC):
     ############################################
     #####      MAIN. ANNOTATE and SAVE     #####
     ############################################
-
+    def init_pipe_stack(self):
+        self.pipe_stacks = self.get_pipe_stacks()
     def annotate(self):
-        pipe_stacks = self.get_pipe_stacks()
+        
+
         input = self.processed_input
         out = None
-        while not pipe_stacks.empty():
-            pipe_stack = pipe_stacks.get()
+        while not self.pipe_stacks.empty():
+            pipe_stack = self.pipe_stacks.get()
             if pipe_stack['stack_type'] == 'spacy':
                 nlp = self.init_spacy_nlp(pipe_stack['stack'])
-                out = list(nlp.pipe(input, as_tuples=True, n_process=-1, batch_size=1000))
+                out = list(nlp.pipe(input, as_tuples=True, n_process=-1, batch_size=3000))
                 input = out
             else:
                 while pipe_stack['stack']:
@@ -127,7 +131,6 @@ class Pipeline(ABC):
     ############################################
     def reset_input_output(self):
         self.set_input(None)
-        self.annotated_artifacts = None
         self.annotated_artifacts = None
 
     def set_input(self, nodes):
@@ -180,7 +183,7 @@ class Pipeline(ABC):
     ############################################
     def get_pipe_stacks(self):
         logger.info("Defining pipe default and spacy stacks")
-        pipe_queue: [Pipe] = self.pipeline.copy()
+        pipe_queue: list = self.pipeline.copy()
         pipe_stack: Queue = Queue()  # {"spacy": ["ner", "bla", "bloo], "default": ["da", "doo", "di"}
         task_collection = []
         previous_task_is_spacy = False
@@ -203,7 +206,7 @@ class Pipeline(ABC):
         return pipe_stack
 
     def init_spacy_nlp(self, subpipeline) -> Language:
-        nlp = spacy.load(self.spacy_language_model, disable=["tok2vec", "tagger", "parser", "attribute_ruler", "lemmatizer", "ner"])
+        nlp =  spacy.blank("en")#spacy.load(self.spacy_language_model, exclude=["tok2vec", "tagger", "parser", "attribute_ruler", "lemmatizer", "ner"])
         for pipe in subpipeline:
             if not nlp.has_pipe(pipe.pipe_id_or_func):
                 if pipe.pipe_id_or_func in nlp.disabled:
@@ -212,6 +215,7 @@ class Pipeline(ABC):
                     nlp.add_pipe(pipe.pipe_id_or_func)#, **kargs)
             else:
                 logger.debug("pipe already in pipeline")
+        logger.info(f"Pipes are {nlp.pipe_names}")
         return nlp
 
     def load_spacy_model(self):

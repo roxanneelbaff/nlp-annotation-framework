@@ -1,13 +1,12 @@
 from statistics import mean
 
 import pandas as pd
-from simpletransformers.ner import NERModel
 from spacy.language import Language
-from spacy.tokens import Token, Span, Doc
-import torch
+from spacy.tokens import  Span, Doc
 from transformers.utils import logging
 from transformers import pipeline
 from transformers import RobertaTokenizer, RobertaForSequenceClassification
+from nlpaf.util.timer import Timer
 
 # REQUIRES sentencizer
 #https://huggingface.co/SkolkovoInstitute/roberta_toxicity_classifier?text=I+like+you.+I+love+you
@@ -39,6 +38,8 @@ class ToxicityFactory:
         if not Doc.has_extension("toxicity"):
             Doc.set_extension("toxicity", default=None)
     def __call__(self, doc):
+        t = Timer("Toxicity")
+        t.start()
         all_scores = {}
         all_scores["neutral"] = []
         all_scores["toxic"] = []
@@ -85,5 +86,5 @@ class ToxicityFactory:
 
 
         doc._.set("toxicity", predictions)
-
+        t.stop()
         return doc
