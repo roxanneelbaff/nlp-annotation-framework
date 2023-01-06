@@ -29,8 +29,8 @@ class HedgeFactory:
             Doc.set_extension("hedge", default=None)
 
     def __call__(self, doc):
-        t = Timer("Hedge")
-        t.start()
+        #t = Timer("Hedge")
+        #t.start()
         logging.disable_progress_bar()
         results, _ = self.model.predict([doc.text])
 
@@ -48,5 +48,5 @@ class HedgeFactory:
                                          right_index=True).reset_index().to_dict('records')
 
         doc._.set("hedge", predictions)
-        t.stop()
+        #t.stop()
         return doc

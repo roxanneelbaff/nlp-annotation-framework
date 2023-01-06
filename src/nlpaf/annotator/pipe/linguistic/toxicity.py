@@ -7,6 +7,7 @@ from transformers.utils import logging
 from transformers import pipeline
 from transformers import RobertaTokenizer, RobertaForSequenceClassification
 from nlpaf.util.timer import Timer
+from nlpaf import logger
 
 # REQUIRES sentencizer
 #https://huggingface.co/SkolkovoInstitute/roberta_toxicity_classifier?text=I+like+you.+I+love+you
@@ -38,17 +39,20 @@ class ToxicityFactory:
         if not Doc.has_extension("toxicity"):
             Doc.set_extension("toxicity", default=None)
     def __call__(self, doc):
-        t = Timer("Toxicity")
-        t.start()
+        #t = Timer("Toxicity")
+        #t.start()
         all_scores = {}
         all_scores["neutral"] = []
         all_scores["toxic"] = []
 
         sentence_lbls = []
+        logger.debug("in toxic")
 
-        for sentence in doc.sents:
-            txt = sentence.text
-            sent_toxicity_result = self.transformer_nlp(txt)
+
+        sent_toxicity_result_arr = self.transformer_nlp([sentence.text for sentence in doc.sents])
+        for sent_toxicity_result in sent_toxicity_result_arr:
+            #txt = sentence.text
+            #sent_toxicity_result = self.transformer_nlp(txt)
 
             for sent_toxicity_score in sent_toxicity_result:
                 label = sent_toxicity_score['label']
@@ -56,10 +60,10 @@ class ToxicityFactory:
 
                 all_scores[label].append(score)
 
-                sentence._.set(f"toxicity_{label}", score)
+                #sentence._.set(f"toxicity_{label}", score)
             sent_scores = pd.DataFrame(sent_toxicity_result)
             dominant_lbl = sent_scores.iloc[sent_scores["score"].argmax()]["label"]
-            sentence._.set(f"toxicity_dominant", dominant_lbl)
+            #sentence._.set(f"toxicity_dominant", dominant_lbl)
             sentence_lbls.append(dominant_lbl)
 
 
@@ -86,5 +90,6 @@ class ToxicityFactory:
 
 
         doc._.set("toxicity", predictions)
-        t.stop()
+        #t.stop()
+        logger.debug("in toxic - 1 run done")
         return doc

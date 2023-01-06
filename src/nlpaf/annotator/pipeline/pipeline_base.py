@@ -66,6 +66,7 @@ class Pipeline(ABC):
         self.set_spacy_language_model()
         self.pipe_stacks = None
         self.stack = []
+        self.spacy_n_processors = 1
 
     ############################################
     #####      ABSTRACT METHODS            #####
@@ -113,7 +114,9 @@ class Pipeline(ABC):
             logger.debug(f"executing component of type {s['type']} ")
             _component = s['component']
             if s['type'] == 'spacy':
-                out = list(_component.pipe(input, as_tuples=True, n_process=-1))
+                if self.spacy_n_processors != 1:
+                    logger.info(f"In case you are using transformer based pipe, set *spacy_n_processors* to 1 instead of {self.spacy_n_processors } or else the nlp.pipe will freeze")
+                out = list(s['component'].pipe(input, as_tuples=True, n_process=self.spacy_n_processors ))
                 input = out
             else:
                 out = _component(input)
@@ -223,7 +226,7 @@ class Pipeline(ABC):
         return pipe_stack
 
     def init_spacy_nlp(self, subpipeline) -> Language:
-        nlp =  spacy.blank("en")#spacy.load(self.spacy_language_model, exclude=["tok2vec", "tagger", "parser", "attribute_ruler", "lemmatizer", "ner"])
+        nlp:Language =  spacy.blank("en")#spacy.load(self.spacy_language_model, exclude=["tok2vec", "tagger", "parser", "attribute_ruler", "lemmatizer", "ner"])
         for pipe in subpipeline:
             if not nlp.has_pipe(pipe.pipe_id_or_func):
                 if pipe.pipe_id_or_func in nlp.disabled:
