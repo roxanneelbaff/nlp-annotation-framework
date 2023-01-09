@@ -130,7 +130,7 @@ class Pipeline(ABC):
         if self.annotated_artifacts is None:
             logger.error("Nothing to save, call annotate before saving")
             pass
-        for pipe in tqdm(self.pipeline):
+        for pipe in self.pipeline:
             if pipe.save_output:
                 logger.info("saving annotations of {}".format(pipe))
                 if self.out_df is None:
@@ -152,6 +152,7 @@ class Pipeline(ABC):
     def reset_input_output(self):
         self.set_input(None)
         self.annotated_artifacts = None
+        self.out_df = None
 
     def set_input(self, nodes):
         self.input = nodes
