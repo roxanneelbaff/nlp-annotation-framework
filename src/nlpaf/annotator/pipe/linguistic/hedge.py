@@ -33,7 +33,7 @@ class HedgeFactory:
         #t.start()
         logging.disable_progress_bar()
         results, _ = self.model.predict([doc.text])
-
+        
         df_ = pd.DataFrame({"words": [list(x.keys())[0] for x in utils.flatten_list(results)],
                             "label": [list(x.values())[0] for x in utils.flatten_list(results)]})
         #df_ = df_[df_["label"] != "C"]
