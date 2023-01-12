@@ -132,7 +132,7 @@ class Pipeline(ABC):
             pass
         for pipe in self.pipeline:
             if pipe.save_output:
-                logger.info("saving annotations of {}".format(pipe))
+                logger.debug("saving annotations of {}".format(pipe))
                 if self.out_df is None:
                     self.out_df = self.pipe_instance_dict[pipe.name].save_annotations(self.annotated_artifacts)
                 else:

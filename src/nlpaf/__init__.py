@@ -32,4 +32,4 @@ file_format = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(messa
 f_handler.setFormatter(file_format)
 logger.addHandler(f_handler)
 
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)

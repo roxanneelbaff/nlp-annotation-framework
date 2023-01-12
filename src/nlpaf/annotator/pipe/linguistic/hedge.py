@@ -3,7 +3,7 @@ import pandas as pd
 from simpletransformers.ner import NERModel, NERArgs
 from spacy.language import Language
 from spacy.tokens import  Doc
-from transformers.utils import logging
+from nlpaf.utils import logging
 import nlpaf.utils as utils
 from nlpaf.util.timer import Timer
 

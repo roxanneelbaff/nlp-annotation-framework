@@ -12,10 +12,10 @@ class EmpathPipeOrchestrator(PipeOrchestrator):
             row = {self.input_id: context[self.input_id]}
 
             for category, count in doc._.empath_count.items():
-                row[f"{category}_count"] = doc._.empath_count[category]
-                row[f"{category}_ratio"] = doc._.empath_ratio[category]
-                row[f"{category}_position"] = doc._.empath_positions[category]
-                row[f"{category}_word"] = doc._.empath_words[category]
+                row[f"empath_{category}_count"] = doc._.empath_count[category]
+                row[f"empath_{category}_ratio"] = doc._.empath_ratio[category]
+                row[f"empath_{category}_position"] = doc._.empath_positions[category]
+                row[f"empath_{category}_word"] = doc._.empath_words[category]
             out_arr.append(row)
         out_df: pd.DataFrame = pd.DataFrame(out_arr)
 

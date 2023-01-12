@@ -1,11 +1,6 @@
 
-#### HELPERS ####
-from collections import defaultdict
-
-import spacy
 from spacy_arguing_lexicon import ArguingLexiconParser
-from empath import Empath
-from empath import helpers
+
 from spacy.language import Language
 from spacy.tokens import Token, Span, Doc
 
