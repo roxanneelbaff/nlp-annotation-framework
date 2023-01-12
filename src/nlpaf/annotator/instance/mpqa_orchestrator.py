@@ -20,7 +20,7 @@ class MpqaPipeOrchestrator(PipeOrchestrator):
                 row[f"{mpqa_ext}"] = doc._.get(mpqa_ext)
 
             row["mpqa_token_ratio"] = doc._.mpqa_token_ratio
-            row["count_mpqa_args"] = doc._.count_mpqa_args
+            row["mpqa_args_count"] = doc._.mpqa_args_count
             out_arr.append(row)
         out_df: pd.DataFrame = pd.DataFrame(out_arr)
 

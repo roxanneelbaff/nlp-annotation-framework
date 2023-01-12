@@ -38,6 +38,7 @@ class ToxicityFactory:
 
         if not Doc.has_extension("toxicity"):
             Doc.set_extension("toxicity", default=None)
+            
     def __call__(self, doc):
         #t = Timer("Toxicity")
         #t.start()

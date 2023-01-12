@@ -61,7 +61,7 @@ _dict["ToxicityOrchestrator"] = {
 
 _dict["MpqaPipeOrchestrator"] = {
     PipeConfigKeys._orchestrator_class : "nlpaf.annotator.instance.mpqa_orchestrator.MpqaPipeOrchestrator",
-    PipeConfigKeys._pipe_id_or_func : "mpqa_counter", # id in case of space, function name otherwise
+    PipeConfigKeys._pipe_id_or_func : "mpqa_arg_component", # id in case of space, function name otherwise
     PipeConfigKeys._pipe_path : "nlpaf.annotator.pipe.linguistic.mpqa",  # leave empty if the pipe is a spacy native pipe, otherwise provide the path of where the pipe_id_or_func exists
     PipeConfigKeys._level : "singleton",  # node or set
     PipeConfigKeys._data_type : "text",  # for now we support text - later url, image

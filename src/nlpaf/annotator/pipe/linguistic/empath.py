@@ -9,10 +9,8 @@ from empath import helpers
 from spacy.language import Language
 from spacy.tokens import Token, Span, Doc
 
+from transformers.utils import logging
 
-def set_extension_(ext, default = None):
-    if not Doc.has_extension(ext):
-        Doc.set_extension(ext, default=default)
 
 
 ### END OF Helpers ####
@@ -63,26 +61,32 @@ class EmpathExtended(Empath):
         return count, ratio, words_position, words
 
 
-@Language.component("empath_component")
-def empath_component_function(doc:Doc):
-    lexicon = EmpathExtended()
-    empath_dic, ratios, positions, words = lexicon.analyze(doc.text)
+@Language.factory("empath_component")
+class EmpathFactory:
+    EMPATH_CUSTOM_LABEL_LST = ["empath_count", "empath_ratio", "empath_positions", "empath_words"]
 
-    col_count = "empath_count"
-    col_ratio = "empath_ratio"
-    col_position = "empath_positions"
-    col_words = "empath_words"
+    def __init__(self, nlp: Language, name: str):
+        self.nlp = nlp
+        logging.disable_progress_bar()
+        self.lexicon = EmpathExtended()
 
-    set_extension_(col_count, default=None)
-    set_extension_(col_ratio, default=None)
-    set_extension_(col_position, default=None)
-    set_extension_(col_words, default=None)
+        for cat in self.lexicon.cats:
+            ext: str  = f"empath_{cat}"
+            if not Doc.has_extension(ext):
+                Doc.set_extension(ext, default=None)
 
-    empath_caregories = [k for k,v in empath_dic.items() if v > 0.0]
-    doc._.set(col_count,    {k:v for k,v in empath_dic.items() if k in empath_caregories})
-    doc._.set(col_ratio,    {k:v for k,v in ratios.items() if k in empath_caregories})
-    doc._.set(col_position, {k:v for k,v in positions.items() if k in empath_caregories})
-    doc._.set(col_words,    {k:v for k,v in words.items() if k in empath_caregories})
+        for ext in EmpathFactory.EMPATH_CUSTOM_LABEL_LST:
+            if not Doc.has_extension(ext):
+                Doc.set_extension(ext, default=None)
+
+    def __call__(self, doc):
+        empath_dic, ratios, positions, words = self.lexicon.analyze(doc.text)
+
+        empath_caregories = [k for k,v in empath_dic.items() if v > 0.0]
+        doc._.set("empath_count",    {k:v for k,v in empath_dic.items() if k in empath_caregories})
+        doc._.set("empath_ratio",    {k:v for k,v in ratios.items() if k in empath_caregories})
+        doc._.set("empath_positions", {k:v for k,v in positions.items() if k in empath_caregories})
+        doc._.set("empath_words",    {k:v for k,v in words.items() if k in empath_caregories})
 
 
-    return doc
+        return doc

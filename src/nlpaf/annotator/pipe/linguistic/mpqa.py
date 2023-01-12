@@ -7,14 +7,9 @@ from spacy.tokens import Token, Span, Doc
 from transformers.utils import logging
 
 
-@Language.factory("mpqaW_component")
-class ToxicityFactory:
-    def __init__(self, nlp: Language, name: str):
-        self.nlp = nlp
-        logging.disable_progress_bar()
-
-
-        mpqa_labels = [    
+@Language.factory("mpqa_arg_component")
+class MpqaArgFactory:
+    MPQA_ARG_LABEL_LST = [    
             'assessments',
             'doubt',
             'authority',
@@ -35,22 +30,23 @@ class ToxicityFactory:
            
         ]
 
-        mpqa_additional_labels = [
-             'argumentative', 
-            'mpqa_token_ratio',
-            'count_mpqa_args'
-        ]
-        mpqa_labels = [f"mpqa_{x}" for x in mpqa_labels+mpqa_additional_labels]
-        for label in mpqa_labels:
+    MPQA_ARG_CUSTOM_LABEL_LST = [
+        'argumentative', 
+        'token_ratio',
+        'args_count'
+    ]
+
+    def __init__(self, nlp: Language, name: str):
+        self.nlp = nlp
+        logging.disable_progress_bar()
+        all_labels = [f"mpqa_{x}" for x in  MpqaArgFactory.MPQA_ARG_LABEL_LST+ MpqaArgFactory.MPQA_ARG_CUSTOM_LABEL_LST]
+        for label in all_labels:
             if not Doc.has_extension(label):
                 Doc.set_extension(label, default=0)
 
-
-
-
     def __call__(self, doc):
         arguments = list(doc._.arguments.get_argument_spans_and_matches())
-        doc._.argumentative = len(arguments)
+        doc._.mpqa_argumentative = len(arguments)
         total_arg_words = 0
 
         for arg in arguments:
@@ -63,7 +59,7 @@ class ToxicityFactory:
             total_arg_words += arg_span.__len__()
 
         doc._.mpqa_token_ratio =round(float(total_arg_words) / float(doc.__len__()), 3)
-        doc._.count_mpqa_args = len(arguments)
+        doc._.mpqa_args_count = len(arguments)
 
         return doc
 
