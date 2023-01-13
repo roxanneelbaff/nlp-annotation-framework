@@ -114,8 +114,6 @@ class Pipeline(ABC):
             logger.debug(f"executing component of type {s['type']} ")
             _component = s['component']
             if s['type'] == 'spacy':
-                if self.spacy_n_processors != 1:
-                    logger.info(f"In case you are using transformer based pipe, set *spacy_n_processors* to 1 instead of {self.spacy_n_processors } or else the nlp.pipe will freeze")
                 out = list(s['component'].pipe(input, as_tuples=True, n_process=self.spacy_n_processors ))
                 input = out
             else:

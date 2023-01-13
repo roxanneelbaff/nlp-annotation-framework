@@ -27,7 +27,7 @@ _dict["NamedEntityPipeOrchestrator"] = {
 }
 
 _dict["EmotionPipeOrchestrator"] = {
-    PipeConfigKeys._orchestrator_class : "nlpaf.annotator.instance.emotion_annotator.EmotionPipeOrchestrator",
+    PipeConfigKeys._orchestrator_class : "nlpaf.annotator.instance.emotion_orchestrator.EmotionPipeOrchestrator",
     PipeConfigKeys._pipe_id_or_func : "emotion_hartmann_component", # id in case of space, function name otherwise
     PipeConfigKeys._pipe_path : "nlpaf.annotator.pipe.linguistic.emotion",  # leave empty if the pipe is a spacy native pipe, otherwise provide the path of where the pipe_id_or_func exists
     PipeConfigKeys._level : "singleton",  # node or set

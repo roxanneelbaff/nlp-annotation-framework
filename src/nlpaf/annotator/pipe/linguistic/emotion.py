@@ -89,7 +89,7 @@ class EmotionHartmannFactory:
             {
                 "label": x,
                 "count": sentence_lbls.count(x),
-                "ratio": round(sentence_lbls.count(x) / len(sentence_lbls), 3)
+                "ratio": round(sentence_lbls.count(x) / len(sentence_lbls),5)
             }
             for x in set(sentence_lbls)
         ]).set_index("label")
