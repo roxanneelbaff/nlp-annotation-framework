@@ -62,6 +62,7 @@ def significance(original_df, features = None, save = False, desc='', independen
     if features is None:
         features = list(original_df.columns)
         features.remove(independent_var)
+        print(f"there are {len(features)} features.")
 
     for feature in features:
 
