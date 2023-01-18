@@ -4,23 +4,12 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "nlpaf"
-version = "2.3.3"
+version = "2.3.4"
 description='Implementation of different NLP tools.'
 readme = "README.md"
 authors = [{ name = "Roxanne El Baff", email = "roxanne.elbaff@gmail.com" }]
 license = { file = "LICENSE" }
-classifiers = [
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    'Development Status :: 3 - Alpha',
-    'Intended Audience :: Science/Research',
-
-]
 keywords=['nlp', 'feature extraction', 'topic modeling']
-
-
-
 dependencies = [
     "pandas",
     "spacy_arguing_lexicon",
@@ -41,11 +30,21 @@ dependencies = [
     "scipy"
 ]
 
-[project.urls]
-Home = "https://github.com/roxanneelbaff/nlp-annotation-framework"
 
 [tool.poetry]
 # ...
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    'Development Status :: 3 - Alpha',
+    'Intended Audience :: Science/Research',
+
+]
+readme = "README.md"
 include = ["lexicon"]
+
+[project.urls]
+repository = "https://github.com/roxanneelbaff/nlp-annotation-framework"
 
 # to republish: flit build and the flit publish
