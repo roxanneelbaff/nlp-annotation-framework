@@ -9,3 +9,5 @@ matplotlib
 empath>=0.89
 pyLDAvis>=3.3.1
 scikit-learn>=1.1.1
+statsmodels==0.13.5
+scipy>=1.8.0
