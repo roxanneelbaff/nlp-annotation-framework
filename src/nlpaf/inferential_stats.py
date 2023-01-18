@@ -60,18 +60,16 @@ def significance(original_df, features = None, save = False, desc='', independen
     
     # conduct sig. test for each characteristic
     if features is None:
-        features = list(original_df.columns)
+        features = original_df.columns.to_list()
         features.remove(independent_var)
         print(f"there are {len(features)} features.")
 
     for feature in features:
-
+        print(f"Feature: {feature}")
         with warnings.catch_warnings():
-            warnings.filterwarnings('error')
+            #warnings.filterwarnings('error')
             try:
-                
-
-                df = original_df[[independent_var, feature ]]
+                df = original_df[[independent_var, feature ]].copy()
                 # Get feature values for each group
                 groups = {}
                 for g, g_df in original_df.groupby([independent_var]):
@@ -185,7 +183,6 @@ def significance(original_df, features = None, save = False, desc='', independen
             except Exception as e:
                 print('exception for feature ', e)
             #logging.error(traceback.format_exc())
-        
         # Save result
         #row += "{};{};{};{};{};{};{};{}\n".format(political_orientation, feature, is_all_normal, is_homogeneous, p_val, effect_interpretation, (p_val<0.05),str_res)
     # Saving 
