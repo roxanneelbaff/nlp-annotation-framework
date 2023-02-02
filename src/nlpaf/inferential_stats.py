@@ -6,6 +6,8 @@ import pandas as pd
 import math
 import warnings
 import itertools
+from io import StringIO
+import nlpaf.utils as utils 
 
 def cohend(d1, d2):
 	# calculate the size of samples
@@ -38,13 +40,27 @@ def anova_table(aov):
     return aov
 
 
-def significance(original_df, features = None, save = False, desc='', independent_var='cluster'):
+def _siginificance_calculated(filename):
+    if filename is not None and len(filename)>0:
+        filepath_detailed = '{}_detailed.csv'.format( filename)
+        filepath = '{}.csv'.format( filename)
+        if utils.file_exists(filepath_detailed) and utils.file_exists(filepath):
+            return pd.read_csv(filepath, sep=";").set_index(["feature"]), pd.read_csv(filepath_detailed, sep=";")
+    return None, None
+
+def significance(original_df, features = None,  filename='', independent_var='cluster'):
     result = []
     warnings.filterwarnings('ignore')
     print('data has {} instances'.format(str(len(original_df))))
 
+    
+    result_df, detailed_df =  _siginificance_calculated(filename)
+    if result_df is not None and detailed_df is not None:
+        print("already calculated")
+        return result_df, detailed_df 
+    result_df, detailed_df  = None, None
     # to save the data
-    row = "sep=;\nfeature;is_normal (shapiro);is_homogeneous (levene);p_value;is_significant;effect;result"
+    row = "feature;is_normal (shapiro);is_homogeneous (levene);p_value;is_significant;effect;result"
     # all pairs
     pairs = list(itertools.combinations(original_df[independent_var].unique(), 2))
     
@@ -182,15 +198,22 @@ def significance(original_df, features = None, save = False, desc='', independen
             
             except Exception as e:
                 print('exception for feature ', e)
-            #logging.error(traceback.format_exc())
-        # Save result
-        #row += "{};{};{};{};{};{};{};{}\n".format(political_orientation, feature, is_all_normal, is_homogeneous, p_val, effect_interpretation, (p_val<0.05),str_res)
-    # Saving 
-    if save:
-        #filename = 'data/significant_tests/{}_discourse_level_{}.csv'.format(political_orientation, data_part)
-        filename = '{}.csv'.format( desc)
-        with open(filename, 'w', encoding="utf-8") as w:
+
+   
+    detailed_df = pd.read_csv(StringIO(row), sep=";")
+
+    result_df = None
+    if len(result)>0:
+        result_df = pd.DataFrame(result)
+        result_df.set_index(['feature'], inplace=True)
+
+    if filename is not None and len(filename.strip())>0:
+        filepath_detailed = '{}_detailed.csv'.format(filename)
+        with open(filepath_detailed, 'w', encoding="utf-8") as w:
             w.write(row)
-    result_df = pd.DataFrame(result)
-    result_df.set_index(['feature'], inplace=True)
-    return result_df
+
+        if len(result)>0:
+            filepath = '{}.csv'.format( filename)
+            result_df.reset_index().to_csv(filepath, sep=";")
+
+    return result_df, detailed_df

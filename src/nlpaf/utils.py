@@ -7,6 +7,7 @@ import importlib
 import itertools
 import os
 import hashlib
+import pathlib
 import pkgutil
 
 import nltk
@@ -87,3 +88,10 @@ def load_sub_packages(package):
         #print(f"Found submodule {modname} (is a package: {ispkg})" )
         module = load_module(modname)
         #print (f"Imported {module}")
+
+
+def create_folder(folder_path):
+    pathlib.Path(folder_path).mkdir(parents=True, exist_ok=True)
+
+def file_exists(file_path):
+    return os.path.isfile(file_path)
