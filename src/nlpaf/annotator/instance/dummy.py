@@ -6,8 +6,6 @@ class DummyDefaultPipeOrchestrator(PipeOrchestrator):
     pass
 
 
-
-
 def customized_pipe_func(input):
     logger.debug("checking Dummy customized pipe")
     return input

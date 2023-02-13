@@ -1,10 +1,11 @@
-
 from dataclasses import dataclass, field
 import time
 from typing import Callable, ClassVar, Dict, Optional
 
+
 class TimerError(Exception):
     """A custom exception used to report errors in use of Timer class"""
+
 
 @dataclass
 class Timer:
@@ -18,7 +19,8 @@ class Timer:
         """Add timer to dict of timers after initialization"""
         if self.name is not None:
             self.timers.setdefault(self.name, 0)
-        else: self.name= ""
+        else:
+            self.name = ""
 
     def start(self) -> None:
         """Start a new timer"""
@@ -41,7 +43,6 @@ class Timer:
             self.logger(self.text.format(self.name, elapsed_time))
         if self.name:
             self.timers[self.name] += elapsed_time
-
 
         print(self.text.format(self.name, elapsed_time))
         return elapsed_time

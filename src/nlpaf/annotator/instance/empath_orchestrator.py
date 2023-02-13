@@ -3,9 +3,7 @@ import pandas as pd
 from nlpaf.annotator.orchestrator import PipeOrchestrator
 
 
-
 class EmpathPipeOrchestrator(PipeOrchestrator):
-
     def save_annotations(self, annotated_texts: list) -> pd.DataFrame:
         out_arr = []
         for doc, context in annotated_texts:
@@ -20,12 +18,3 @@ class EmpathPipeOrchestrator(PipeOrchestrator):
         out_df: pd.DataFrame = pd.DataFrame(out_arr)
 
         return out_df
-
-
-
-
-
-
-
-
-
