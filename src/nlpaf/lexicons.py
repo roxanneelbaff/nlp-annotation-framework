@@ -15,7 +15,9 @@ def load_nrc_emotions():
     NRC_FILEPATH = "../lexicon/NRC-Emotion-Lexicon/NRC-Emotion-Lexicon-v0.92/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt"
     """
     emolex_df = pd.read_csv(
-        config.NRC_LEXICON_FOLDER, names=["word", "emotion", "association"], sep="\t"
+        config.NRC_LEXICON_FOLDER,
+        names=["word", "emotion", "association"],
+        sep="\t",
     )
     emolex_words = emolex_df.pivot(
         index="word", columns="emotion", values="association"
@@ -129,7 +131,9 @@ def apply_mpqa_sentences_subjectivity(row, path=config.OPINION_FINDER_PATH):
 
 
 def count_mpqa_subj_obj(df, annotations_path=config.OPINION_FINDER_PATH):
-    df = df.apply(apply_mpqa_sentences_subjectivity, args=(annotations_path,), axis=1)
+    df = df.apply(
+        apply_mpqa_sentences_subjectivity, args=(annotations_path,), axis=1
+    )
     return df
 
 
@@ -184,7 +188,9 @@ def _count_mpqa_arg(
         row[prefix + lexicon_label] += 1
         total_arg_words += len(arg_span.text)
 
-    row["mpqa_arg_lexicon_ratio"] = round(float(total) / float(len(text.split())), 5)
+    row["mpqa_arg_lexicon_ratio"] = round(
+        float(total) / float(len(text.split())), 5
+    )
     return row
 
 

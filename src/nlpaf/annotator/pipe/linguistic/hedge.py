@@ -36,8 +36,12 @@ class HedgeFactory:
 
         df_ = pd.DataFrame(
             {
-                "words": [list(x.keys())[0] for x in utils.flatten_list(results)],
-                "label": [list(x.values())[0] for x in utils.flatten_list(results)],
+                "words": [
+                    list(x.keys())[0] for x in utils.flatten_list(results)
+                ],
+                "label": [
+                    list(x.values())[0] for x in utils.flatten_list(results)
+                ],
             }
         )
         # df_ = df_[df_["label"] != "C"]
@@ -47,7 +51,9 @@ class HedgeFactory:
             .agg({"words": ",".join})
             .set_index("label")
         )
-        count_labels = df_.groupby(["label"], as_index=False).size().set_index("label")
+        count_labels = (
+            df_.groupby(["label"], as_index=False).size().set_index("label")
+        )
         count_labels["ratio"] = round(
             count_labels["size"] / count_labels["size"].sum(), 3
         )

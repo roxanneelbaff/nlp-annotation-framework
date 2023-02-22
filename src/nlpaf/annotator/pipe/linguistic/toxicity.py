@@ -68,7 +68,9 @@ class ToxicityFactory:
 
                 # sentence._.set(f"toxicity_{label}", score)
             sent_scores = pd.DataFrame(sent_toxicity_result)
-            dominant_lbl = sent_scores.iloc[sent_scores["score"].argmax()]["label"]
+            dominant_lbl = sent_scores.iloc[sent_scores["score"].argmax()][
+                "label"
+            ]
             # sentence._.set(f"toxicity_dominant", dominant_lbl)
             sentence_lbls.append(dominant_lbl)
 
@@ -84,7 +86,9 @@ class ToxicityFactory:
                 {
                     "label": x,
                     "count": sentence_lbls.count(x),
-                    "ratio": round(sentence_lbls.count(x) / len(sentence_lbls), 3),
+                    "ratio": round(
+                        sentence_lbls.count(x) / len(sentence_lbls), 3
+                    ),
                 }
                 for x in set(sentence_lbls)
             ]

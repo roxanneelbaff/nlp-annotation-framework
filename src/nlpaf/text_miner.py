@@ -91,7 +91,10 @@ def preprocess(text, stem_lemma=3):
 
         for idx in range(0, len(tokens)):
             token = tokens[idx].lower()
-            if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 1:
+            if (
+                token not in gensim.parsing.preprocessing.STOPWORDS
+                and len(token) > 1
+            ):
                 token_all.append(token)
 
                 wordnet_pos = get_wordnet_pos(pos_tags[idx][1])
@@ -178,7 +181,10 @@ def extract_n_grams_features(
     vectorizer = None
     if count_type == "tf-idf":
         vectorizer = TfidfVectorizer(
-            min_df=min_df, max_df=max_df, ngram_range=ngram_range, max_features=100
+            min_df=min_df,
+            max_df=max_df,
+            ngram_range=ngram_range,
+            max_features=100,
         )
     elif count_type == "counter":
         vectorizer = CountVectorizer(
@@ -198,11 +204,17 @@ def extract_n_grams_features(
     aid_df = df_[[idx]]
 
     extracted_df = extracted_df.merge(
-        aid_df, left_index=True, right_index=True, suffixes=(False, False), how="inner"
+        aid_df,
+        left_index=True,
+        right_index=True,
+        suffixes=(False, False),
+        how="inner",
     )
     extracted_df.set_index(idx, inplace=True)
 
-    result_df = df_original.apply(_apply_basic_features, axis=1, args=(extracted_df,))
+    result_df = df_original.apply(
+        _apply_basic_features, axis=1, args=(extracted_df,)
+    )
     return result_df, extracted_df
 
 
@@ -221,7 +233,8 @@ class topic_modeling_preprocess:
         self.build_n_gram_models()
         # python3 -m spacy download en
         self.nlp = spacy.load(
-            topic_modeling_preprocess.LANG_SPACY_MAP[lang], disable=["parser", "ner"]
+            topic_modeling_preprocess.LANG_SPACY_MAP[lang],
+            disable=["parser", "ner"],
         )
 
         self.preprocess_for_topic_modeling()

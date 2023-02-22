@@ -15,7 +15,8 @@ import nltk
 
 from matplotlib import pyplot as plt
 from nltk.corpus import stopwords
-from wordcloud import WordCloud
+
+# from wordcloud import WordCloud
 import matplotlib.colors as mcolors
 import nlpaf as config
 
@@ -42,7 +43,9 @@ class topic_modeler:
 
     def get_term_doc_frequency(self):
         self.preprocesser = text_miner.topic_modeling_preprocess(
-            self.data, stopwords_extension=self.stopwords_extension, lang=self.lang
+            self.data,
+            stopwords_extension=self.stopwords_extension,
+            lang=self.lang,
         )
         self.data_lemmatized = self.preprocesser.data_lemmatized
 
@@ -51,11 +54,16 @@ class topic_modeler:
 
         # Term Document Frequency
         print("Initializing the corpus after lemmatization")
-        self.corpus = [self.id2word.doc2bow(text) for text in self.data_lemmatized]
+        self.corpus = [
+            self.id2word.doc2bow(text) for text in self.data_lemmatized
+        ]
 
     def show_human_readable_freq(self):
         # Human readable format of corpus (term-frequency)
-        return [[(self.id2word[id], freq) for id, freq in cp] for cp in self.corpus[:1]]
+        return [
+            [(self.id2word[id], freq) for id, freq in cp]
+            for cp in self.corpus[:1]
+        ]
 
     def compute_coherence_values(
         self,
@@ -168,7 +176,9 @@ class topic_modeler:
 
         if show_details:
             for m, cv in zip(topics_num_arr, coherence_values):
-                print("Num Topics =", m, " has Coherence Value of", round(cv, 4))
+                print(
+                    "Num Topics =", m, " has Coherence Value of", round(cv, 4)
+                )
         return model_list, coherence_values
 
     ## VISIULISATION
@@ -227,7 +237,11 @@ class topic_modeler:
 
     def print_topics(self):
         if self.model is not None:
-            print(self.model.print_topics(num_topics=self.num_topics, num_words=5))
+            print(
+                self.model.print_topics(
+                    num_topics=self.num_topics, num_words=5
+                )
+            )
 
     def visualize_topics_interactively(self):
         # pyLDAvis.enable_notebook()
@@ -248,7 +262,11 @@ class topic_modeler:
                     topic_keywords = ", ".join([word for word, prop in wp])
                     sent_topics_df = sent_topics_df.append(
                         pd.Series(
-                            [int(topic_num), round(prop_topic, 4), topic_keywords]
+                            [
+                                int(topic_num),
+                                round(prop_topic, 4),
+                                topic_keywords,
+                            ]
                         ),
                         ignore_index=True,
                     )
@@ -295,7 +313,8 @@ class topic_modeler:
 
     def get_topics_terms(self, save_path=None):
         df = pd.DataFrame(
-            self.model.get_topics(), columns=self.model.id2word.id2token.values()
+            self.model.get_topics(),
+            columns=self.model.id2word.id2token.values(),
         )
 
         if save_path is not None:
@@ -306,13 +325,17 @@ class topic_modeler:
         # Group top 5 sentences under each topic
         result_df = pd.DataFrame()
 
-        doc_topics_outdf_grpd = self.get_doc_dominant_topic().groupby("Dominant_Topic")
+        doc_topics_outdf_grpd = self.get_doc_dominant_topic().groupby(
+            "Dominant_Topic"
+        )
 
         for i, grp in doc_topics_outdf_grpd:
             result_df = pd.concat(
                 [
                     result_df,
-                    grp.sort_values(["Perc_Contribution"], ascending=[0]).head(1),
+                    grp.sort_values(["Perc_Contribution"], ascending=[0]).head(
+                        1
+                    ),
                 ],
                 axis=0,
             )
@@ -321,7 +344,12 @@ class topic_modeler:
         result_df.reset_index(drop=True, inplace=True)
 
         # Format
-        result_df.columns = ["Topic_Num", "Topic_Perc_Contrib", "Keywords", "Text"]
+        result_df.columns = [
+            "Topic_Num",
+            "Topic_Perc_Contrib",
+            "Keywords",
+            "Text",
+        ]
         return result_df
 
     def get_topic_distr(self):
@@ -364,95 +392,31 @@ class topic_modeler:
 
         stop_words = stopwords.words("english")
         stop_words.extend(stopwords_extension)
-
-        cloud = WordCloud(
-            stopwords=stop_words,
-            background_color="white",
-            width=2500,
-            height=1800,
-            max_words=10,
-            colormap="tab10",
-            color_func=lambda *args, **kwargs: cols[i],
-            prefer_horizontal=1.0,
-        )
-
-        fig, axes = plt.subplots(
-            int(limit / 2), 2, figsize=(10, 10), sharex="all", sharey="all"
-        )
-
-        for i, ax in enumerate(axes.flatten()):
-            fig.add_subplot(ax)
-            topic_words = dict(topics[i][1])
-            cloud.generate_from_frequencies(topic_words, max_font_size=300)
-            plt.gca().imshow(cloud)
-            plt.gca().set_title("Topic " + str(topic_index[i]), fontdict=dict(size=16))
-            plt.gca().axis("off")
-            if i > limit:
-                break
-
-        plt.subplots_adjust(wspace=0, hspace=0)
-        plt.axis("off")
-        plt.margins(x=0, y=0)
-        plt.tight_layout()
-        plt.show()
-
-    def show_word_cloud(self, limit=10):
-        # 1. Wordcloud of Top N words in each topic
-
-        cols = [
-            color for name, color in mcolors.TABLEAU_COLORS.items()
-        ]  # more colors: 'mcolors.XKCD_COLORS'
-
-        cloud = WordCloud(
-            stopwords=self.preprocesser.stop_words,
-            background_color="white",
-            width=2500,
-            height=1800,
-            max_words=10,
-            colormap="tab10",
-            color_func=lambda *args, **kwargs: cols[i],
-            prefer_horizontal=1.0,
-        )
-
-        topics = self.model.show_topics(formatted=False)
-
-        fig, axes = plt.subplots(
-            int(limit / 2), 2, figsize=(10, 10), sharex="all", sharey="all"
-        )
-
-        for i, ax in enumerate(axes.flatten()):
-            fig.add_subplot(ax)
-            topic_words = dict(topics[i][1])
-            cloud.generate_from_frequencies(topic_words, max_font_size=300)
-            plt.gca().imshow(cloud)
-            plt.gca().set_title("Topic " + str(i), fontdict=dict(size=16))
-            plt.gca().axis("off")
-            if i > limit:
-                break
-
-        plt.subplots_adjust(wspace=0, hspace=0)
-        plt.axis("off")
-        plt.margins(x=0, y=0)
-        plt.tight_layout()
-        plt.show()
+        pass
 
     def topics_per_document(self):
         dominant_topics = []
         topic_percentages = []
         for i, corp in enumerate(self.corpus):
             topic_percs = self.model[corp]
-            dominant_topic = sorted(topic_percs, key=lambda x: x[1], reverse=True)[0][0]
+            dominant_topic = sorted(
+                topic_percs, key=lambda x: x[1], reverse=True
+            )[0][0]
             dominant_topics.append((i, dominant_topic))
             topic_percentages.append(topic_percs)
 
         # Total Topic Distribution by actual weight
-        topic_weightage_by_doc = pd.DataFrame([dict(t) for t in topic_percentages])
+        topic_weightage_by_doc = pd.DataFrame(
+            [dict(t) for t in topic_percentages]
+        )
         df_topic_weightage_by_doc = (
             topic_weightage_by_doc.sum().to_frame(name="count").reset_index()
         )
 
         # Distribution of Dominant Topics in Each Document
-        df = pd.DataFrame(dominant_topics, columns=["Document_Id", "Dominant_Topic"])
+        df = pd.DataFrame(
+            dominant_topics, columns=["Document_Id", "Dominant_Topic"]
+        )
         dominant_topic_in_each_doc = df.groupby("Dominant_Topic").size()
         df_dominant_topic_in_each_doc = dominant_topic_in_each_doc.to_frame(
             name="count"
@@ -463,7 +427,9 @@ class topic_modeler:
         from matplotlib.ticker import FuncFormatter
 
         # Plot
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4), dpi=120, sharey="all")
+        fig, (ax1, ax2) = plt.subplots(
+            1, 2, figsize=(10, 4), dpi=120, sharey="all"
+        )
 
         # Topic Distribution by Dominant Topics
         (
@@ -482,7 +448,9 @@ class topic_modeler:
         df_top3words_stacked = pd.DataFrame(
             topic_top3words, columns=["topic_id", "words"]
         )
-        df_top3words = df_top3words_stacked.groupby("topic_id").agg(", \n".join)
+        df_top3words = df_top3words_stacked.groupby("topic_id").agg(
+            ", \n".join
+        )
         df_top3words.reset_index(level=0, inplace=True)
 
         ax1.bar(
@@ -493,7 +461,9 @@ class topic_modeler:
             color="firebrick",
         )
         ax1.set_xticks(
-            range(df_dominant_topic_in_each_doc.Dominant_Topic.unique().__len__())
+            range(
+                df_dominant_topic_in_each_doc.Dominant_Topic.unique().__len__()
+            )
         )
         tick_formatter = FuncFormatter(
             lambda x, pos: "Topic "
@@ -502,7 +472,9 @@ class topic_modeler:
             + df_top3words.loc[df_top3words.topic_id == x, "words"].values[0]
         )
         ax1.xaxis.set_major_formatter(tick_formatter)
-        ax1.set_title("Number of Documents by Dominant Topic", fontdict=dict(size=10))
+        ax1.set_title(
+            "Number of Documents by Dominant Topic", fontdict=dict(size=10)
+        )
         ax1.set_ylabel("Number of Documents")
         ax1.set_ylim(0, 1000)
 
@@ -514,8 +486,12 @@ class topic_modeler:
             width=0.5,
             color="steelblue",
         )
-        ax2.set_xticks(range(df_topic_weightage_by_doc.index.unique().__len__()))
+        ax2.set_xticks(
+            range(df_topic_weightage_by_doc.index.unique().__len__())
+        )
         ax2.xaxis.set_major_formatter(tick_formatter)
-        ax2.set_title("Number of Documents by Topic Weightage", fontdict=dict(size=10))
+        ax2.set_title(
+            "Number of Documents by Topic Weightage", fontdict=dict(size=10)
+        )
 
         plt.show()

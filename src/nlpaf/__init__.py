@@ -28,7 +28,8 @@ logger.addHandler(console_handler)
 f_handler = logging.FileHandler("{}/logs.txt".format(logs_folder))
 # f_handler.setLevel(logging.INFO)
 file_format = logging.Formatter(
-    "%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%d.%m.%Y %H:%M"
+    "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+    datefmt="%d.%m.%Y %H:%M",
 )
 f_handler.setFormatter(file_format)
 logger.addHandler(f_handler)

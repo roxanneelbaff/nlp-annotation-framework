@@ -56,7 +56,9 @@ class MpqaArgFactory:
 
             total_arg_words += arg_span.__len__()
 
-        doc._.mpqa_token_ratio = round(float(total_arg_words) / float(doc.__len__()), 3)
+        doc._.mpqa_token_ratio = round(
+            float(total_arg_words) / float(doc.__len__()), 3
+        )
         doc._.mpqa_args_count = len(arguments)
 
         return doc

@@ -68,7 +68,9 @@ def mpqa_counter_function(doc):
     set_extension_("mpqa_token_ratio", default=0.0)
     set_extension_("count_mpqa_args", default=0)
 
-    doc._.mpqa_token_ratio = round(float(total_arg_words) / float(doc.__len__()), 3)
+    doc._.mpqa_token_ratio = round(
+        float(total_arg_words) / float(doc.__len__()), 3
+    )
     doc._.count_mpqa_args = len(arguments)
 
     return doc

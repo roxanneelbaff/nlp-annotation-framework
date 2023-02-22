@@ -5,7 +5,15 @@ from nlpaf.util.timer import Timer
 
 
 class EmotionPipeOrchestrator(PipeOrchestrator):
-    _EMOTIONS = ["anger", "disgust", "fear", "joy", "neutral", "sadness", "surprise"]
+    _EMOTIONS = [
+        "anger",
+        "disgust",
+        "fear",
+        "joy",
+        "neutral",
+        "sadness",
+        "surprise",
+    ]
 
     def save_annotations(self, annotated_texts: list) -> pd.DataFrame:
         # t = Timer(name="emotion-save-annotations")
@@ -16,9 +24,9 @@ class EmotionPipeOrchestrator(PipeOrchestrator):
 
             if doc._.emotions is not None and len(doc._.emotions) > 0:
                 for emotion_score in doc._.emotions:
-                    row[f"emotion_hartmann_{emotion_score['label']}"] = emotion_score[
-                        "score_mean"
-                    ]
+                    row[
+                        f"emotion_hartmann_{emotion_score['label']}"
+                    ] = emotion_score["score_mean"]
                     row[
                         f"emotion_hartmann_{emotion_score['label']}_count"
                     ] = emotion_score["count"]

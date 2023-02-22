@@ -4,7 +4,7 @@ numpy
 nltk
 gensim
 spacy
-wordcloud
+#wordcloud
 matplotlib
 empath>=0.89
 #pyLDAvis>=3.3.1

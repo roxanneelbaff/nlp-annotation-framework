@@ -1,7 +1,6 @@
 import pandas as pd
 
 from nlpaf.annotator.orchestrator import PipeOrchestrator
-from nlpaf import logger
 from spacy.tokens import Doc
 
 
@@ -11,7 +10,9 @@ class MpqaPipeOrchestrator(PipeOrchestrator):
 
         for doc, context in annotated_texts:
             d: Doc = doc
-            mpqa_exts = [x for x in d._.doc_extensions if x.startswith("mpqa_")]
+            mpqa_exts = [
+                x for x in d._.doc_extensions if x.startswith("mpqa_")
+            ]
             # logger.debug(mpqa_exts
             row = {self.input_id: context[self.input_id]}
 

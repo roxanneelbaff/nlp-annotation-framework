@@ -17,7 +17,7 @@ dependencies = [
     "nltk",
     "gensim>=3.8.1",
     "spacy",
-    "wordcloud",
+    #"wordcloud",
     "matplotlib",
     "empath",
     #"pyLDAvis",
@@ -45,5 +45,9 @@ include = ["lexicon"]
 
 [project.urls]
 repository = "https://github.com/roxanneelbaff/nlp-annotation-framework"
+
+
+[tool.black]
+line-length = 79
 
 # to republish: flit build and the flit publish

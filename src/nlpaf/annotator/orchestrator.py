@@ -11,7 +11,9 @@ class PipeOrchestrator(ABC):
     _ANNOTATION_TYPE: ClassVar = ["text", "url", "image"]
     _ANNOTATION_LEVEL: ClassVar = ["singleton", "collection"]
 
-    def __init__(self, registered_pipes: Dict, orchestrator_config_id: str = None):
+    def __init__(
+        self, registered_pipes: Dict, orchestrator_config_id: str = None
+    ):
         self.name = (
             self.__class__.__name__
             if orchestrator_config_id is None
@@ -72,7 +74,8 @@ class PipeOrchestrator(ABC):
             error_dict["annotation_level"] = (
                 "The annotation level should have one of the following values: {} "
                 "but has the value {}".format(
-                    str(PipeOrchestrator._ANNOTATION_LEVEL), self.annotation_level
+                    str(PipeOrchestrator._ANNOTATION_LEVEL),
+                    self.annotation_level,
                 )
             )
             logger.error(error_dict["annotation_level"])

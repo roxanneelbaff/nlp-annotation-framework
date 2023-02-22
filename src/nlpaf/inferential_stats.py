@@ -35,9 +35,9 @@ def anova_table(aov):
 
     aov["eta_sq"] = aov[:-1]["sum_sq"] / sum(aov["sum_sq"])
 
-    aov["omega_sq"] = (aov[:-1]["sum_sq"] - (aov[:-1]["df"] * aov["mean_sq"][-1])) / (
-        sum(aov["sum_sq"]) + aov["mean_sq"][-1]
-    )
+    aov["omega_sq"] = (
+        aov[:-1]["sum_sq"] - (aov[:-1]["df"] * aov["mean_sq"][-1])
+    ) / (sum(aov["sum_sq"]) + aov["mean_sq"][-1])
     # eta squared (η2), and omega squared (ω2)
     cols = ["sum_sq", "df", "mean_sq", "F", "PR(>F)", "eta_sq", "omega_sq"]
     aov = aov[cols]
@@ -48,14 +48,18 @@ def _siginificance_calculated(filename):
     if filename is not None and len(filename) > 0:
         filepath_detailed = "{}_detailed.csv".format(filename)
         filepath = "{}.csv".format(filename)
-        if utils.file_exists(filepath_detailed) and utils.file_exists(filepath):
-            return pd.read_csv(filepath, sep=";").set_index(["feature"]), pd.read_csv(
-                filepath_detailed, sep=";"
-            )
+        if utils.file_exists(filepath_detailed) and utils.file_exists(
+            filepath
+        ):
+            return pd.read_csv(filepath, sep=";").set_index(
+                ["feature"]
+            ), pd.read_csv(filepath_detailed, sep=";")
     return None, None
 
 
-def significance(original_df, features=None, filename="", independent_var="cluster"):
+def significance(
+    original_df, features=None, filename="", independent_var="cluster"
+):
     result = []
     warnings.filterwarnings("ignore")
     print("data has {} instances".format(str(len(original_df))))
@@ -68,7 +72,9 @@ def significance(original_df, features=None, filename="", independent_var="clust
     # to save the data
     row = "feature;is_normal (shapiro);is_homogeneous (levene);p_value;is_significant;effect;result"
     # all pairs
-    pairs = list(itertools.combinations(original_df[independent_var].unique(), 2))
+    pairs = list(
+        itertools.combinations(original_df[independent_var].unique(), 2)
+    )
 
     for pair in pairs:
         row += ";" + str(pair) + ";" + str(pair)
@@ -125,7 +131,9 @@ def significance(original_df, features=None, filename="", independent_var="clust
                     ).fit()
                     aov_table = anova_lm(anova_result, typ=2)
 
-                    aov = anova_table(aov_table).loc["C(" + independent_var + ")"]
+                    aov = anova_table(aov_table).loc[
+                        "C(" + independent_var + ")"
+                    ]
 
                     stat = aov["F"]
                     p_val = aov["PR(>F)"]
@@ -164,10 +172,14 @@ def significance(original_df, features=None, filename="", independent_var="clust
                 for pair in pairs:
                     try:
                         sample1 = list(
-                            (df[feature][df[independent_var] == pair[0]]).values
+                            (
+                                df[feature][df[independent_var] == pair[0]]
+                            ).values
                         )
                         sample2 = list(
-                            (df[feature][df[independent_var] == pair[1]]).values
+                            (
+                                df[feature][df[independent_var] == pair[1]]
+                            ).values
                         )
 
                         pair_stat, pair_p_val = (
@@ -184,7 +196,9 @@ def significance(original_df, features=None, filename="", independent_var="clust
                             N = len(sample1) + len(sample2)
                             if is_all_normal and is_homogeneous:
                                 z = stats.norm.ppf(1 - (1 - pair_p_val))
-                                pair_effect_size_num = round((z) / (np.sqrt(N)), 2)
+                                pair_effect_size_num = round(
+                                    (z) / (np.sqrt(N)), 2
+                                )
                                 pair_effect_size = str(pair_effect_size_num)
                             else:
                                 m_u = len(sample1) * len(sample2) / 2
@@ -195,13 +209,21 @@ def significance(original_df, features=None, filename="", independent_var="clust
                                     / 12
                                 )
                                 z = (pair_stat - m_u) / sigma_u
-                                pair_effect_size_num = round((z) / (np.sqrt(N)), 2)
+                                pair_effect_size_num = round(
+                                    (z) / (np.sqrt(N)), 2
+                                )
                                 pair_effect_size = str(pair_effect_size_num)
                         # if pair_stat < bonforrini_threshold:
-                        result_row[pair[0] + " " + pair[1]] = pair_effect_size_num
+                        result_row[
+                            pair[0] + " " + pair[1]
+                        ] = pair_effect_size_num
 
-                        pair_res = "{0}".format((pair_p_val < bonforrini_threshold))
-                        pairs_results += ";" + str(pair_res) + ";" + pair_effect_size
+                        pair_res = "{0}".format(
+                            (pair_p_val < bonforrini_threshold)
+                        )
+                        pairs_results += (
+                            ";" + str(pair_res) + ";" + pair_effect_size
+                        )
 
                     except Exception as e:
                         print(feature)

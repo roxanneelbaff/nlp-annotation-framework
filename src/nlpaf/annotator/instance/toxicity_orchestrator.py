@@ -11,21 +11,21 @@ class ToxicityOrchestrator(PipeOrchestrator):
 
             if doc._.toxicity is not None:
                 for toxicity_dict in doc._.toxicity:
-                    row[f"toxicity_{toxicity_dict['label']}_count"] = toxicity_dict[
-                        "count"
-                    ]
-                    row[f"toxicity_{toxicity_dict['label']}_ratio"] = toxicity_dict[
-                        "ratio"
-                    ]
+                    row[
+                        f"toxicity_{toxicity_dict['label']}_count"
+                    ] = toxicity_dict["count"]
+                    row[
+                        f"toxicity_{toxicity_dict['label']}_ratio"
+                    ] = toxicity_dict["ratio"]
                     row[f"toxicity_{toxicity_dict['label']}"] = toxicity_dict[
                         "score_mean"
                     ]
 
                 res_df = pd.DataFrame(doc._.toxicity)
 
-                row[f"toxicity_dominant"] = res_df.iloc[res_df["count"].argmax()][
-                    "label"
-                ]
+                row[f"toxicity_dominant"] = res_df.iloc[
+                    res_df["count"].argmax()
+                ]["label"]
                 out_arr.append(row)
         out_df: pd.DataFrame = pd.DataFrame(out_arr)
 

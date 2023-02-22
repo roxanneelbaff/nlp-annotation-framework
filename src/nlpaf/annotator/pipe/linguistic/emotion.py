@@ -4,7 +4,11 @@ from simpletransformers.ner import NERModel
 from spacy.language import Language
 from spacy.tokens import Token, Span, Doc
 import torch
-from transformers import AutoConfig, AutoTokenizer, AutoModelForTokenClassification
+from transformers import (
+    AutoConfig,
+    AutoTokenizer,
+    AutoModelForTokenClassification,
+)
 from transformers import pipeline
 from transformers.utils import logging
 from nlpaf import logger
@@ -17,7 +21,15 @@ from nlpaf.util.timer import Timer
 @Language.factory("emotion_hartmann_component")
 class EmotionHartmannFactory:
     _EMOTION_DOC_KEY: str = "emotions"
-    _EMOTIONS = ["anger", "disgust", "fear", "joy", "neutral", "sadness", "surprise"]
+    _EMOTIONS = [
+        "anger",
+        "disgust",
+        "fear",
+        "joy",
+        "neutral",
+        "sadness",
+        "surprise",
+    ]
 
     def __init__(self, nlp: Language, name: str):
         self.nlp = nlp
@@ -93,7 +105,9 @@ class EmotionHartmannFactory:
                 {
                     "label": x,
                     "count": sentence_lbls.count(x),
-                    "ratio": round(sentence_lbls.count(x) / len(sentence_lbls), 5),
+                    "ratio": round(
+                        sentence_lbls.count(x) / len(sentence_lbls), 5
+                    ),
                 }
                 for x in set(sentence_lbls)
             ]
@@ -106,9 +120,9 @@ class EmotionHartmannFactory:
         doc._.set("emotions", predictions_df.reset_index().to_dict("records"))
         doc._.set(
             "emotion_label",
-            predictions_df.reset_index().iloc[predictions_df["count"].argmax()][
-                "label"
-            ],
+            predictions_df.reset_index().iloc[
+                predictions_df["count"].argmax()
+            ]["label"],
         )
         logger.debug("1 emotion call done")
         # all_.stop()
