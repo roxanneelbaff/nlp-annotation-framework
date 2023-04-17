@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "nlpaf"
-version = "2.9.0"
+version = "2.10"
 description='Implementation of different NLP tools.'
 readme = "README.md"
 authors = [{ name = "Roxanne El Baff", email = "roxanne.elbaff@gmail.com" }]
@@ -17,13 +17,13 @@ dependencies = [
     "nltk",
     "gensim>=3.8.1",
     "spacy",
-    #"wordcloud",
+    "wordcloud;python_version <'3.9'",
     "matplotlib",
     "empath",
-    #"pyLDAvis",
+    "pyLDAvis; python_version <'3.9'",
     "scikit-learn",
     "pyarrow",
-    "simpletransformers",
+    "simpletransformers; python_version <'3.9'",
     "tqdm",
     "statsmodels", 
     "scipy"

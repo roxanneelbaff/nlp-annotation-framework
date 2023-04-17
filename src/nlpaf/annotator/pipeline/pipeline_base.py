@@ -10,6 +10,7 @@ from nlpaf import logger, utils
 import nlpaf.annotator.registered_pipes as registered
 from nlpaf.annotator.orchestrator import PipeOrchestrator
 
+
 @dataclasses.dataclass
 class Pipe:
     name: str
