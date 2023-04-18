@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "nlpaf"
-version = "2.10"
+version = "2.10.5"
 description='Implementation of different NLP tools.'
 readme = "README.md"
 authors = [{ name = "Roxanne El Baff", email = "roxanne.elbaff@gmail.com" }]

@@ -23,8 +23,9 @@ class FeatureBasedML:
     y_col: str
     dataset: pd.DataFrame
     split_label_name: str = "split_label"
-    training_cols = None 
+    training_cols: list = None 
     remove_outliers: bool = True
+    normalize: bool = False
     normalizing_method: str = preprocess._NORMALIZE_METHOD_STANDARD_
 
     def __post_init__(self):
@@ -50,7 +51,9 @@ class FeatureBasedML:
 
         # X Y
         print("getting X y data...")
-        training_cols = self.training_cols if self.training_cols is not None else df_train.columns.tolist()-[self.y_col]
+        training_cols = self.training_cols if self.training_cols is not None else df_train.columns.tolist()
+        if self.y_col in training_cols: 
+            training_cols.remove(self.y_col)
         X_train = df_train[training_cols]
         y_train = df_train[self.y_col].values
 
@@ -58,9 +61,10 @@ class FeatureBasedML:
         y_test = df_test[self.y_col].values
 
         # Scale - normalize
-        X_train, X_test = preprocess.normalize(
-            X_train, X_test, normalizing_method=self.normalizing_method
-        )
+        if self.normalize:
+            X_train, X_test = preprocess.normalize(
+                X_train, X_test, normalizing_method=self.normalizing_method
+            )
 
         print("end of get_x_y.")
         return X_train, y_train, X_test, y_test
