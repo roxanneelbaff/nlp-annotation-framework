@@ -1,4 +1,4 @@
-
+from collections import Counter
 from sklearn.svm import SVC
 from sklearn.metrics import (
     classification_report,
@@ -29,7 +29,6 @@ _NORMALIZE_METHOD_MINMAX_ = "minmax"
 def clip_outliers(
     df_train, df_test=None, lower_percentile=1, upper_percentile=99
 ):
-
     def _get_upper_lower_df(train_df, lower_percentile=1, upper_percentile=99):
         boundaries = np.percentile(
             train_df, [lower_percentile, upper_percentile], axis=0
@@ -56,7 +55,9 @@ def clip_outliers(
         )
     )
     boundaries_df = _get_upper_lower_df(
-        numeric_df, lower_percentile=lower_percentile, upper_percentile=upper_percentile
+        numeric_df,
+        lower_percentile=lower_percentile,
+        upper_percentile=upper_percentile,
     )
 
     df_train = df_train.apply(_apply_clip_col, args=(boundaries_df,), axis=0)
@@ -108,22 +109,31 @@ def normalize(X_train, X_test, normalizing_method=_NORMALIZE_METHOD_STANDARD_):
 
 
 def under_sampler(x, y, sampling_strategy_="not minority"):
-    rus = RandomUnderSampler(random_state=42, 
-                             sampling_strategy_=sampling_strategy_)
+    """Sampling strategy could be specifically the number of examples in the minority class divided by the number of examples in the majority class"""
+    rus = RandomUnderSampler(
+        random_state=42, sampling_strategy_=sampling_strategy_
+    )
     x_under, y_under = rus.fit_resample(x, y)
+    print(Counter(y))
     return x_under, y_under
 
 
 # Applies Random Undersampling
-def over_sampler(x, y, sampling_strategy_="not majority"):
-    ros = RandomOverSampler(random_state=42,
-                            sampling_strategy_ = sampling_strategy_)
+def over_sampler(x, y, sampling_strategy_="not majority"): 
+    """the minority class was oversampled to have half the number of examples as the majority class
+    """
+    ros = RandomOverSampler(
+        random_state=42, sampling_strategy_=sampling_strategy_
+    )
     x_, y_ = ros.fit_resample(x, y)
+    print(Counter(y))
+    return x_, y_ 
 
 
 # Applies Synthetic Data Augmentation through SMOTE
-def smote(x, y, sampling_strategy_:str = "not majority"):
-    smote = SMOTE(random_state=42,
-                  sampling_strategy_=sampling_strategy_)
-    x_, y_= smote.fit_resample(x, y)
+def smote(x, y, sampling_strategy_: str = "not majority"):
+
+    smote = SMOTE(random_state=42, sampling_strategy_=sampling_strategy_)
+    x_, y_ = smote.fit_resample(x, y)
+    print(Counter(y))
     return x_, y_
