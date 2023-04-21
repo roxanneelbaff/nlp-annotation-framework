@@ -27,7 +27,7 @@ class FeatureBasedML:
     def __post_init__(self):
         self.normalized = False
         self.X_train, self.y_train, self.X_test, self.y_test = self.set_x_y()
-        self.normalize()
+        self.run_normalize()
 
     def sample(self, type_: str):
         # SAMPLING
@@ -44,7 +44,7 @@ class FeatureBasedML:
                                                           self.y_train,
                                                           sampling_strategy_= self.sampling_strategy)  
                                                   
-    def normalize(self):
+    def run_normalize(self):
         if self.normalize and not self.normalized:
             self.X_train, self.X_test = preprocess.normalize(
                 self.X_train,
@@ -88,7 +88,6 @@ class FeatureBasedML:
         return X_train, y_train, X_test, y_test
 
     def train_xfold(self, folds=5):
-        self.normalize()
         best_params = traditional_trainer.svc_param_gridsearch(
             self.X_train, self.y_train, nfolds_or_division=folds
         )
