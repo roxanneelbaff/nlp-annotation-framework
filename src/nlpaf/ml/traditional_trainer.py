@@ -177,7 +177,7 @@ def randomforest_param_gridsearch(X, y, nfolds_or_division):
     return grid_search.best_params_  # , grid_search.best_score_
 
 
-def train_ensemble(X_train, X_test, y_train, y_test)
+def train_ensemble(X_train, X_test, y_train, y_test):
     # calculate class weights
     class_weights = class_weight.compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
 
