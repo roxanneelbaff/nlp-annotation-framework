@@ -12,7 +12,7 @@ def load_nrc_emotions():
     unzip it and put it under "lexicon", in the same folder as this file, OR
     put it wherever you want and provide the full path in the parameter 'filepath' of
     "NRC-Emotion-Lexicon/NRC-Emotion-Lexicon-v0.92/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt"
-    NRC_FILEPATH = "../lexicon/NRC-Emotion-Lexicon/NRC-Emotion-Lexicon-v0.92/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt"
+    NRC_FILEPATH= "../lexicon/NRC-Emotion-Lexicon/NRC-Emotion-Lexicon-v0.92/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt"
     """
     emolex_df = pd.read_csv(
         config.NRC_LEXICON_FOLDER,
@@ -119,13 +119,13 @@ def apply_mpqa_sentences_subjectivity(row, path=config.OPINION_FINDER_PATH):
         row["mpqa_subjobg_" + key] = float(counts_dic[key])
 
     # total
-    # path = 'corpus/{}.txt'.format(article_id)
-    # text = ''# get text
+    # path= 'corpus/{}.txt'.format(article_id)
+    # text= ''# get text
     ##with open(path, 'r') as f:
-    #    text = f.read()
-    # total_sentences = len(sent_tokenize(text))
+    #    text= f.read()
+    # total_sentences= len(sent_tokenize(text))
     # save to dataframe
-    # row['mpqa_polarity_ratio'] = round(float(polarity_sum) / float(total_sentences ), 5)
+    # row['mpqa_polarity_ratio']= round(float(polarity_sum) / float(total_sentences ), 5)
 
     return row
 

@@ -44,7 +44,7 @@ class ToxicityFactory:
             Doc.set_extension("toxicity", default=None)
 
     def __call__(self, doc):
-        # t = Timer("Toxicity")
+        # t= Timer("Toxicity")
         # t.start()
         all_scores = {}
         all_scores["neutral"] = []
@@ -57,8 +57,8 @@ class ToxicityFactory:
             [sentence.text for sentence in doc.sents]
         )
         for sent_toxicity_result in sent_toxicity_result_arr:
-            # txt = sentence.text
-            # sent_toxicity_result = self.transformer_nlp(txt)
+            # txt= sentence.text
+            # sent_toxicity_result= self.transformer_nlp(txt)
 
             for sent_toxicity_score in sent_toxicity_result:
                 label = sent_toxicity_score["label"]

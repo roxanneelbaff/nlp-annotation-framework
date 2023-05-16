@@ -35,7 +35,7 @@ class EmotionHartmannFactory:
         self.nlp = nlp
         logging.disable_progress_bar()  # https://huggingface.co/docs/transformers/main/en/main_classes/logging#transformers.utils.logging.disable_default_handler
         logger.debug("init emotion_hartmann_component")
-        # t = Timer()
+        # t= Timer()
         # t.start()
         self.transformer_nlp = pipeline(
             "text-classification",
@@ -57,7 +57,7 @@ class EmotionHartmannFactory:
             Span.set_extension(f"emotion_dominant", default=None)
 
     def __call__(self, doc):
-        # all_ = Timer(name="emotionall")
+        # all_= Timer(name="emotionall")
         # all_.start()
         all_scores = {}
         for em in EmotionHartmannFactory._EMOTIONS:
@@ -65,13 +65,13 @@ class EmotionHartmannFactory:
 
         sentence_lbls = []
         logger.debug("In the emotion pipe")
-        # outer = Timer(name="one text")
+        # outer= Timer(name="one text")
         # outer.start()
         for sentence in doc.sents:
             txt = sentence.text
             logger.debug("In the emotion pipe- looping over sentences")
             logger.debug(f"printing sent: {txt}")
-            # t = Timer(name="one-sentence")
+            # t= Timer(name="one-sentence")
             # t.start()
             sent_emotion_result = self.transformer_nlp(txt)[0]
             logger.debug(f"sent_emotion_result {sent_emotion_result}")

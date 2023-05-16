@@ -16,7 +16,7 @@ class EmotionPipeOrchestrator(PipeOrchestrator):
     ]
 
     def save_annotations(self, annotated_texts: list) -> pd.DataFrame:
-        # t = Timer(name="emotion-save-annotations")
+        # t= Timer(name="emotion-save-annotations")
         # t.start()
         out_arr = []
         for doc, context in annotated_texts:

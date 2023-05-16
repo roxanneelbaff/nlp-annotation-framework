@@ -108,7 +108,7 @@ class topic_modeler:
         else:
             print("training on BOW")
 
-        # mallet_path = 'C:...mallet_unzipped\\mallet-2.0.8\\bin\\mallet'
+        # mallet_path= 'C:...mallet_unzipped\\mallet-2.0.8\\bin\\mallet'
         for num_topics in range(start, limit, step):
             if model_type == "lda":
                 model = gensim.models.ldamodel.LdaModel(
@@ -245,7 +245,7 @@ class topic_modeler:
 
     def visualize_topics_interactively(self):
         # pyLDAvis.enable_notebook()
-        # vis = pyLDAvis.gensim.prepare(self.model, self.corpus, self.id2word)
+        # vis= pyLDAvis.gensim.prepare(self.model, self.corpus, self.id2word)
         return None
 
     def get_doc_dominant_topic(self, save_path=None):

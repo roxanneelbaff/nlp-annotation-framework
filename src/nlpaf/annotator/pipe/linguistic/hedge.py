@@ -29,7 +29,7 @@ class HedgeFactory:
             Doc.set_extension("hedge", default=None)
 
     def __call__(self, doc):
-        # t = Timer("Hedge")
+        # t= Timer("Hedge")
         # t.start()
         logging.disable_progress_bar()
         results, _ = self.model.predict([doc.text])
@@ -44,7 +44,7 @@ class HedgeFactory:
                 ],
             }
         )
-        # df_ = df_[df_["label"] != "C"]
+        # df_= df_[df_["label"] != "C"]
 
         labels_words = (
             df_.groupby(["label"], as_index=False)

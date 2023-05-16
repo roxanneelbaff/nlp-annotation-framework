@@ -13,13 +13,22 @@ import numpy as np
 import pandas as pd
 import pickle
 
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, VotingClassifier
+from sklearn.ensemble import (
+    RandomForestClassifier,
+    GradientBoostingClassifier,
+    VotingClassifier,
+)
 from sklearn.svm import SVC
-from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
+from sklearn.model_selection import (
+    train_test_split,
+    cross_val_score,
+    StratifiedKFold,
+)
 from sklearn.utils import class_weight
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.ensemble import BalancedBaggingClassifier
 from sklearn.metrics import classification_report
+
 
 def dummy_train_test(
     X_train, y_train, X_test, y_test, strategy="most_frequent"
@@ -132,7 +141,7 @@ def train_test(
     )
 
     f1_dic["accuracy"] = round(accuracy_score(y_test, y_pred), 2)
-    # f1_dic['no-effect'] = round(f1_score(y_pred=y_pred, y_true=y_test, average=None, labels=['no-effect'])[0], 2)
+    # f1_dic['no-effect']= round(f1_score(y_pred=y_pred, y_true=y_test, average=None, labels=['no-effect'])[0], 2)
     classes = list(np.unique(y_train))
     for label in classes:
         f1_dic[label] = round(
@@ -179,26 +188,39 @@ def randomforest_param_gridsearch(X, y, nfolds_or_division):
 
 def train_ensemble(X_train, X_test, y_train, y_test):
     # calculate class weights
-    class_weights = class_weight.compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
-
+    weights = class_weight.compute_class_weight(
+        "balanced", classes=np.unique(y_train), y=y_train
+    )
+    class_weights = dict(zip(np.unique(y_train), weights))
     # define the individual models
-    rf = RandomForestClassifier(n_estimators=100, random_state=42, class_weight=class_weights)
+    rf = RandomForestClassifier(
+        n_estimators=100, random_state=42, class_weight=class_weights
+    )
     gb = GradientBoostingClassifier(n_estimators=100, random_state=42)
     svm = SVC(probability=True, random_state=42, class_weight=class_weights)
 
     # define the ensemble model
-    ensemble = VotingClassifier(estimators=[('rf', rf), ('gb', gb), ('svm', svm)], voting='soft')
+    ensemble = VotingClassifier(
+        estimators=[("rf", rf), ("gb", gb), ("svm", svm)], voting="soft"
+    )
 
     # define the balanced bagging classifier for resampling
-    bagging = BalancedBaggingClassifier(base_estimator=ensemble, sampling_strategy='auto', replacement=False, random_state=42)
+    bagging = BalancedBaggingClassifier(
+        estimator=ensemble,
+        sampling_strategy="auto",
+        replacement=False,
+        random_state=42,
+    )
 
     # define the cross-validation strategy
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
     # fit and evaluate the resampled ensemble model with cross-validation
-    ros = RandomOverSampler(sampling_strategy='minority', random_state=42)
+    ros = RandomOverSampler(sampling_strategy="minority", random_state=42)
     X_resampled, y_resampled = ros.fit_resample(X_train, y_train)
-    scores = cross_val_score(bagging, X_resampled, y_resampled, scoring='f1_macro', cv=cv)
+    scores = cross_val_score(
+        bagging, X_resampled, y_resampled, scoring="f1_macro", cv=cv
+    )
     print("Cross-validation scores:", scores)
     print("Mean F1 score:", np.mean(scores))
 
@@ -214,4 +236,4 @@ def train_ensemble(X_train, X_test, y_train, y_test):
 
     # evaluate the performance of the ensemble model on the test set
     result["report"] = classification_report(y_test, y_pred)
-    print(result["report"] )
+    print(result["report"])

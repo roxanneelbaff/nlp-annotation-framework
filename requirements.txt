@@ -13,3 +13,8 @@ statsmodels>=0.13.5
 scipy>=1.8.0
 imbalanced-learn==0.10.1
 imblearn
+
+# transformers
+transformers
+optuna>=3.1.1 
+evaluate>=0.4.0

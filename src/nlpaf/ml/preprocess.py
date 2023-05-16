@@ -119,20 +119,18 @@ def under_sampler(x, y, sampling_strategy_="not minority"):
 
 
 # Applies Random Undersampling
-def over_sampler(x, y, sampling_strategy_="not majority"): 
-    """the minority class was oversampled to have half the number of examples as the majority class
-    """
+def over_sampler(x, y, sampling_strategy_="not majority"):
+    """the minority class was oversampled to have half the number of examples as the majority class"""
     ros = RandomOverSampler(
         random_state=42, sampling_strategy_=sampling_strategy_
     )
     x_, y_ = ros.fit_resample(x, y)
     print(Counter(y))
-    return x_, y_ 
+    return x_, y_
 
 
 # Applies Synthetic Data Augmentation through SMOTE
 def smote(x, y, sampling_strategy_: str = "not majority"):
-
     smote = SMOTE(random_state=42, sampling_strategy_=sampling_strategy_)
     x_, y_ = smote.fit_resample(x, y)
     print(Counter(y))

@@ -125,7 +125,7 @@ def significance(
 
                 # sig TESTS FOR EACH FEATURE
                 if is_all_normal and is_homogeneous:
-                    # stat, p_val = stats.f_oneway(no_effect_feat, empowering_feat, challenging_feat, na_feat)
+                    # stat, p_val= stats.f_oneway(no_effect_feat, empowering_feat, challenging_feat, na_feat)
                     anova_result = ols(
                         feature + " ~ C(" + independent_var + ")", data=df
                     ).fit()
@@ -148,12 +148,14 @@ def significance(
                         elif effect_omega < 0.14:
                             effect_interpretation = "medium"
 
-                    str_res = "F({0},{1})= {2:.2f}, p = {3:.7f}, ω2 = {4:.2f}".format(
-                        int(anova_result.df_model),
-                        int(anova_result.df_resid),
-                        stat,
-                        p_val,
-                        effect_omega,
+                    str_res = (
+                        "F({0},{1})= {2:.2f}, p= {3:.7f}, ω2= {4:.2f}".format(
+                            int(anova_result.df_model),
+                            int(anova_result.df_resid),
+                            stat,
+                            p_val,
+                            effect_omega,
+                        )
                     )
 
                 else:
@@ -161,8 +163,8 @@ def significance(
 
                 # POST HOC
 
-                # posthoc_df = pd.DataFrame({"no-effect": no_effect_feat, "reinforcing": empowering_feat, "challenging": challenging_feat, "na":na_feat})
-                # posthoc_df = posthoc_df.melt(var_name='groups', value_name='values')
+                # posthoc_df= pd.DataFrame({"no-effect": no_effect_feat, "reinforcing": empowering_feat, "challenging": challenging_feat, "na":na_feat})
+                # posthoc_df= posthoc_df.melt(var_name='groups', value_name='values')
                 # posthoc_p_values_df =sp.posthoc_mannwhitney(posthoc_df, val_col='values', group_col='groups', p_adjust='bonferroni') #corrected
 
                 # PAIRS EFFECT SIZE

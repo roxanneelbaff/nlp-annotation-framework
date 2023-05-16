@@ -32,25 +32,31 @@ class FeatureBasedML:
     def sample(self, type_: str):
         # SAMPLING
         if type_ == "OVER":
-            self.X_train, self.y_train = preprocess.over_sampler(self.X_train,
-                                                                 self.y_train,
-                                                                 sampling_strategy_= self.sampling_strategy)
+            self.X_train, self.y_train = preprocess.over_sampler(
+                self.X_train,
+                self.y_train,
+                sampling_strategy_=self.sampling_strategy,
+            )
         elif type_ == "UNDER":
-            self.X_train, self.y_train = preprocess.under_sampler(self.X_train,
-                                                                  self.y_train,
-                                                                  sampling_strategy_= self.sampling_strategy)
+            self.X_train, self.y_train = preprocess.under_sampler(
+                self.X_train,
+                self.y_train,
+                sampling_strategy_=self.sampling_strategy,
+            )
         elif type_ == "SMOTE":
-            self.X_train, self.y_train = preprocess.smote(self.X_train,
-                                                          self.y_train,
-                                                          sampling_strategy_= self.sampling_strategy)  
-                                                  
+            self.X_train, self.y_train = preprocess.smote(
+                self.X_train,
+                self.y_train,
+                sampling_strategy_=self.sampling_strategy,
+            )
+
     def run_normalize(self):
         if self.normalize and not self.normalized:
             self.X_train, self.X_test = preprocess.normalize(
                 self.X_train,
                 self.X_test,
-                normalizing_method=self.normalizing_method
-            )          
+                normalizing_method=self.normalizing_method,
+            )
             self.normalized = True
 
     def set_x_y(self):
@@ -59,12 +65,12 @@ class FeatureBasedML:
         df_test = df[df[self.split_label_name] == "test"]
 
         # Remove outliers:
-        # cols = get_features_map(df_train).values()
-        # cols = reduce(lambda x, y: x + y, cols)
+        # cols= get_features_map(df_train).values()
+        # cols= reduce(lambda x, y: x + y, cols)
         if self.remove_outliers:
             print("removing outliers by clipping values...")
 
-            # df_train_features = df_train[cols]
+            # df_train_features= df_train[cols]
             df_train, df_test = preprocess.clip_outliers(
                 df_train, df_test, lower_percentile=1, upper_percentile=99
             )
