@@ -16,7 +16,7 @@ from transformers import pipeline
 
 @dataclasses.dataclass
 class TextClassification:
-    dataset: DatasetDict | str
+    dataset: 'DatasetDict | str'
     id2label: Dict  # = dataclasses.field(default_factory=dict)
     label2id: Dict  # = dataclasses.field(default_factory=dict)
 
@@ -171,7 +171,7 @@ class TextClassification:
         # Loop over test set 
         predictions = []
         labels = []
-        for x in range(1,100):
+        for x in range(1, 100):
             text = ""
             predicted = self.predict_1label(text)
             predictions.append(predicted)
@@ -194,10 +194,11 @@ class TextClassification:
                 self.pretrained_model_name,
                 num_labels=len(self.id2label.keys())
                 )
-        
-        training_data = self.tokenized_data["train"].shard(index=1, 
-                                                           num_shards=num_shards) if run_on_subset \
-                                                           else self.tokenized_data["train"]
+
+        training_data = self.tokenized_data["train"].shard(
+            index=1,
+            num_shards=num_shards) if run_on_subset \
+            else self.tokenized_data["train"]
 
         trainer = Trainer(
             model_init=model_init,
@@ -208,9 +209,9 @@ class TextClassification:
             compute_metrics=self.compute_metrics
         )
 
-        best_run = trainer.hyperparameter_search(n_trials=10,
+        best_run = trainer.hyperparameter_search(n_trials=n_trials,
                                                  direction=direction)
-               
+
         if load_best_params:
             for n, v in best_run.hyperparameters.items():
                 print(f"Resetting {n}:{v}")
