@@ -19,6 +19,8 @@ class TextClassification:
     dataset: 'DatasetDict | str'
     id2label: Dict  # = dataclasses.field(default_factory=dict)
     label2id: Dict  # = dataclasses.field(default_factory=dict)
+    training_key: str
+    eval_key: str
 
     text_col: str = "text"
 
@@ -133,8 +135,8 @@ class TextClassification:
         self.trainer = Trainer(
             model=self.model,
             args=self.training_args,
-            train_dataset=self.tokenized_data["train"],
-            eval_dataset=self.tokenized_data["test"],
+            train_dataset=self.tokenized_data[self.training_key],
+            eval_dataset=self.tokenized_data[self.eval_key],
             tokenizer=self.tokenizer,
             data_collator=self.data_collator,
             compute_metrics=self.compute_metrics,
@@ -149,13 +151,16 @@ class TextClassification:
         return self.trainer
 
     # POST TRAINING
-    def predict_all(self, text, task: str = "text-classification"):
-        classifier = pipeline(task, model=f"{self.model_org}/"
-                                          f"{self.output_dir}")
-        return classifier(text)
+    def predict_all(self, text, task: str = "text-classification", use_current_model:bool=True):
+        if use_current_model:
+            result = self.trainer.predict(text) 
+        else:
+            classifier = pipeline(task, model=f"{self.model_org}/"
+                                            f"{self.output_dir}")
+            result= classifier(text)
+        return result
 
-    def predict_1label(self, text: str):
-   
+    def predict_1label(self, text: str, use_current_model:bool=True):
         tokenizer = AutoTokenizer.from_pretrained(f"{self.model_org}"
                                                   f"/{self.output_dir}")
         inputs = tokenizer(text, return_tensors="pt")
@@ -171,15 +176,16 @@ class TextClassification:
         # Loop over test set 
         predictions = []
         labels = []
-        for x in range(1, 100):
-            text = ""
+        for datapoint in self.dataset["test"]:
+            text = datapoint[self.text_col]
             predicted = self.predict_1label(text)
             predictions.append(predicted)
+            labels.append(datapoint["label"])
 
         score: float = round(self.evaluator.compute(
                                     predictions=predictions,
                                     references=labels,
-                                    average=self.averaged_metric), 2)
+                                    average=self.averaged_metric), 4)
         return score
 
         # evaluate
@@ -195,16 +201,16 @@ class TextClassification:
                 num_labels=len(self.id2label.keys())
                 )
 
-        training_data = self.tokenized_data["train"].shard(
+        training_data = self.tokenized_data[self.training_key].shard(
             index=1,
             num_shards=num_shards) if run_on_subset \
-            else self.tokenized_data["train"]
+            else self.tokenized_data[self.training_key]
 
         trainer = Trainer(
             model_init=model_init,
             args=self.training_args,
             train_dataset=training_data,
-            eval_dataset=self.tokenized_data["test"],
+            eval_dataset=self.tokenized_data[self.eval_key],
             tokenizer=self.tokenizer,
             compute_metrics=self.compute_metrics
         )
