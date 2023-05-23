@@ -12,6 +12,7 @@ from transformers import TrainingArguments, Trainer
 import evaluate
 import numpy as np
 from transformers import pipeline
+import comet_ml
 
 
 @dataclasses.dataclass
@@ -21,6 +22,7 @@ class TextClassification:
     label2id: Dict  # = dataclasses.field(default_factory=dict)
     training_key: str
     eval_key: str
+    undersample: bool = False
 
     text_col: str = "text"
 
@@ -72,15 +74,67 @@ class TextClassification:
     def set_dataset(self):
         if type(self.dataset) is str:
             self.dataset: DatasetDict = load_dataset(self.dataset)
+        if self.undersample:
+            print("undersampling")
+            self._random_undersample()
+
+    def _random_undersample(self, seed: int = 42):
+
+        np.random.seed(seed)
+
+        labels = np.array(self.dataset[self.training_key]['label'])
+
+        print(np.unique(np.array(self.dataset[self.training_key]['label']),
+                        return_counts=True))
+
+        # Get the indices for each class
+        label_indices: dict = {}
+        min_length = -1
+        for _label in np.unique(labels):
+            label_indices[_label] = np.where(labels == _label)[0]
+            length = len(label_indices[_label])
+            if length < min_length or min_length == -1:
+                min_length = length
+                lowest_label = _label
+
+        print("undersampling so all each class in the training set has length"
+              f" {min_length}, same as class {lowest_label}")
+
+        shuffled = {}
+        for _label, _indices in label_indices.items():
+            np.random.shuffle(_indices)
+            shuffled[_label] = _indices[:min_length]
+
+        balanced_indices = np.concatenate([v for _, v in shuffled.items()])
+        self.dataset[self.training_key] = self.dataset[self.training_key].select(balanced_indices)
+
+        print(np.unique(np.array(self.dataset[self.training_key]['label']),
+                        return_counts=True))
+        return self.dataset
 
     def set_evaluator(self):
         self.evaluator = evaluate.load(self.metric)
 
+    def _get_example(self, index):
+        return self.tokenized_data[self.eval_key][index]["text"]
+    
     def compute_metrics(self, eval_pred):
+        experiment = comet_ml.get_global_experiment() 
         predictions, labels = eval_pred
         predictions = np.argmax(predictions, axis=1)
         extra_params = {"average": self.averaged_metric} if \
             self.averaged_metric is not None else {}
+
+        if experiment:
+            epoch = int(experiment.curr_epoch) if experiment.curr_epoch is not None else 0
+            experiment.set_epoch(epoch)
+            experiment.log_confusion_matrix(
+                y_true=labels,
+                y_predicted=predictions,
+                file_name=f"confusion-matrix-epoch-{epoch}.json",
+                labels=[self.id2label[key] for key in sorted(self.id2label.keys())],
+                index_to_example_function=self._get_example,
+            )
 
         return self.evaluator.compute(predictions=predictions,
                                       references=labels,
@@ -123,11 +177,13 @@ class TextClassification:
             evaluation_strategy=self.evaluation_strategy,
             save_strategy=self.save_strategy,
             load_best_model_at_end=self.load_best_model_at_end,
+            metric_for_best_model=self.metric,
             push_to_hub=self.push_to_hub,
             hub_private_repo=self.hub_private_repo,
             report_to=self.report_to,
             do_eval=True,
-            do_predict=True
+            do_predict=True,
+            run_name=self.output_dir
         )
 
     def train(self):
@@ -156,8 +212,8 @@ class TextClassification:
             result = self.trainer.predict(text) 
         else:
             classifier = pipeline(task, model=f"{self.model_org}/"
-                                            f"{self.output_dir}")
-            result= classifier(text)
+                                              f"{self.output_dir}")
+            result = classifier(text)
         return result
 
     def predict_1label(self, text: str, use_current_model:bool=True):
@@ -189,17 +245,17 @@ class TextClassification:
         return score
 
         # evaluate
-
+    def model_init(self):
+        return AutoModelForSequenceClassification.from_pretrained(
+            self.pretrained_model_name,
+            num_labels=len(self.id2label.keys())
+            )
+    
     def search_hyperparameters(self, n_trials: int = 10,
                                run_on_subset: bool = False,
                                num_shards: int = 10,
                                direction="maximize",
                                load_best_params: bool = True):
-        def model_init(self):
-            return AutoModelForSequenceClassification.from_pretrained(
-                self.pretrained_model_name,
-                num_labels=len(self.id2label.keys())
-                )
 
         training_data = self.tokenized_data[self.training_key].shard(
             index=1,
@@ -207,7 +263,7 @@ class TextClassification:
             else self.tokenized_data[self.training_key]
 
         trainer = Trainer(
-            model_init=model_init,
+            model_init=self.model_init,
             args=self.training_args,
             train_dataset=training_data,
             eval_dataset=self.tokenized_data[self.eval_key],
