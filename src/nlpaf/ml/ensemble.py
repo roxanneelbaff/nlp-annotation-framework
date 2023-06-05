@@ -8,7 +8,6 @@ from sklearn.metrics import classification_report
 
 # load dataset and split into train and test sets
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 def train_ensemble():
     # calculate class weights
     class_weights = class_weight.compute_class_weight('balanced', classes=np.unique(self.y_train), y=y_train)

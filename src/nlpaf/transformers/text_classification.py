@@ -13,6 +13,8 @@ import evaluate
 import numpy as np
 from transformers import pipeline
 import comet_ml
+from comet_ml import Experiment
+from sklearn.metrics import f1_score
 
 
 @dataclasses.dataclass
@@ -30,6 +32,7 @@ class TextClassification:
     metric: str = "f1"
     averaged_metric: str = "macro"
     model_org: str = "notaphoenix"
+    uncase: bool = False
 
     # Training specific
     output_dir: str = "my_awesome_model"
@@ -67,6 +70,9 @@ class TextClassification:
 
         print("Setting training args...")
         self.set_training_args()
+
+        print("Setting trainer")
+        self.init_trainer()
 
     def __post_init__(self):
         self.reinit()
@@ -140,19 +146,20 @@ class TextClassification:
                                       references=labels,
                                       **extra_params)
 
-    def preprocess_function(examples, tokenizer, text_col):
-        return tokenizer(examples[text_col],
+    def preprocess_function(self, examples, tokenizer, text_col):
+        examples = examples[text_col].lower() if self.uncase else examples[text_col]
+        return tokenizer(examples,
                          truncation=True)
 
     def tokenize_data(self):
         print(type(self.dataset))
         self.tokenized_data = self.dataset.map(
-            TextClassification.preprocess_function,
+            self.preprocess_function,
             fn_kwargs={
                 "tokenizer": self.tokenizer,
                 "text_col": self.text_col
                 },
-            batched=True)
+            batched=False)
         return self.tokenized_data
 
     def set_data_collator(self):
@@ -183,12 +190,12 @@ class TextClassification:
             report_to=self.report_to,
             do_eval=True,
             do_predict=True,
+            do_train=True,
             run_name=self.output_dir
         )
 
-    def train(self):
-
-        self.trainer = Trainer(
+    def init_trainer(self):
+        self.trainer: Trainer = Trainer(
             model=self.model,
             args=self.training_args,
             train_dataset=self.tokenized_data[self.training_key],
@@ -198,9 +205,13 @@ class TextClassification:
             compute_metrics=self.compute_metrics,
         )
 
+    def train(self):
         self.trainer.train()
-        try:
+        if self.push_to_hub:
             self.trainer.push_to_hub()
+        try:
+            score = self.evaluate()
+            print("score:", score)
         except Exception:
             print("Failed to push to hub")
 
@@ -230,19 +241,16 @@ class TextClassification:
     
     def evaluate(self):
         # Loop over test set 
-        predictions = []
-        labels = []
-        for datapoint in self.dataset["test"]:
-            text = datapoint[self.text_col]
-            predicted = self.predict_1label(text)
-            predictions.append(predicted)
-            labels.append(datapoint["label"])
+        evaluation_results = None
+        try:
 
-        score: float = round(self.evaluator.compute(
-                                    predictions=predictions,
-                                    references=labels,
-                                    average=self.averaged_metric), 4)
-        return score
+            evaluation_results = self.trainer.evaluate(self.tokenized_data["test"])
+            experiment = comet_ml.get_global_experiment() 
+            experiment.log_metric("eval_best_model", evaluation_results)
+        except Exception as e:
+            print(f"error while evaluating on test set {e}")
+    
+        return evaluation_results
 
         # evaluate
     def model_init(self):
@@ -251,11 +259,24 @@ class TextClassification:
             num_labels=len(self.id2label.keys())
             )
     
+    @staticmethod
+    def compute_objective(predictions, targets):
+        # Convert predictions and targets to numpy arrays if they are not already
+        predictions = predictions.numpy() if isinstance(predictions, torch.Tensor) else predictions
+        targets = targets.numpy() if isinstance(targets, torch.Tensor) else targets
+        
+        # Calculate the macro F1 score
+        macro_f1 = f1_score(targets, predictions, average='macro')
+        
+        return macro_f1
+    
     def search_hyperparameters(self, n_trials: int = 10,
                                run_on_subset: bool = False,
                                num_shards: int = 10,
                                direction="maximize",
-                               load_best_params: bool = True):
+                               load_best_params: bool = True,
+                               backend: str ="optuna",
+                               hp_space_func=None):
 
         training_data = self.tokenized_data[self.training_key].shard(
             index=1,
@@ -263,21 +284,26 @@ class TextClassification:
             else self.tokenized_data[self.training_key]
 
         trainer = Trainer(
+            model=None,
             model_init=self.model_init,
             args=self.training_args,
             train_dataset=training_data,
             eval_dataset=self.tokenized_data[self.eval_key],
             tokenizer=self.tokenizer,
-            compute_metrics=self.compute_metrics
+            data_collator=self.data_collator,
+            compute_metrics=self.compute_metrics,
         )
 
         best_run = trainer.hyperparameter_search(n_trials=n_trials,
-                                                 direction=direction)
+                                                 direction=direction,
+                                                 backend=backend,
+                                                 hp_space=hp_space_func,)
 
         if load_best_params:
+            
             for n, v in best_run.hyperparameters.items():
                 print(f"Resetting {n}:{v}")
                 setattr(self.trainer.args, n, v)
-            self.trainer.train()
+            # self.trainer.train()
 
         return best_run
