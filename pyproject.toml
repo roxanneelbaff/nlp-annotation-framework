@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "nlpaf"
-version = "2.12.27"
+version = "2.12.29"
 description='Implementation of different NLP tools.'
 readme = "README.md"
 authors = [{ name = "Roxanne El Baff", email = "roxanne.elbaff@gmail.com" }]
@@ -26,7 +26,7 @@ dependencies = [
     "simpletransformers; python_version <'3.9'",
     "tqdm",
     "statsmodels", 
-    "scipy"
+    "scipy","pynvml"
 ]
 
 

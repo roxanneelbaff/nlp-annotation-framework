@@ -19,6 +19,28 @@ import torch
 from torch.optim import AdamW
 import torch
 
+from pynvml import *
+
+
+def print_gpu_utilization():
+    """
+    Source code from https://huggingface.co/docs/transformers/perf_train_gpu_one
+    """
+    nvmlInit()
+    handle = nvmlDeviceGetHandleByIndex(0)
+    info = nvmlDeviceGetMemoryInfo(handle)
+    print(f"GPU memory occupied: {info.used//1024**2} MB.")
+
+
+def print_summary(result):
+    """
+    Source code from https://huggingface.co/docs/transformers/perf_train_gpu_one
+    """
+
+    print(f"Time: {result.metrics['train_runtime']:.2f}")
+    print(f"Samples/second: {result.metrics['train_samples_per_second']:.2f}")
+    print_gpu_utilization()
+
 
 @dataclasses.dataclass
 class TextClassification:
@@ -52,7 +74,9 @@ class TextClassification:
     report_to: str = "all"  # comet_ml
     tokenizer_max_length: int = 1024
     tokenizer_padding: 'bool|str' = True  # max length per batch
-    use_gpu:bool = True
+    use_gpu: bool = True
+    optimizer: str = "adamw_torch"
+
     # EVALUATION #
     def reinit(self):
         print("Loading dataset")
@@ -182,8 +206,10 @@ class TextClassification:
 
         if self.use_gpu:
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            print_gpu_utilization()
             print(f"asked to move to GPU - Gpu exist? {torch.cuda.is_available()}")
             self.model = self.model.to(device)  # move model to GPU
+            print_gpu_utilization()
 
     def set_training_args(self):
         self.training_args = TrainingArguments(
@@ -204,7 +230,8 @@ class TextClassification:
             do_predict=True,
             do_train=True,
             run_name=self.output_dir,
-            optim="adamw_torch"
+            optim=self.optimizer,
+            log_level="error",
         )
 
     def init_trainer(self):
@@ -219,7 +246,7 @@ class TextClassification:
         )
 
     def train(self):
-        self.trainer.train()
+        result = self.trainer.train()
         if self.push_to_hub:
             self.trainer.push_to_hub()
         try:
@@ -227,7 +254,7 @@ class TextClassification:
             print("score:", score)
         except Exception:
             print("Failed to push to hub")
-
+        print_summary(result)
         return self.trainer
 
     # POST TRAINING
