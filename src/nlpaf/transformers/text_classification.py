@@ -15,7 +15,8 @@ from transformers import pipeline
 import comet_ml
 from comet_ml import Experiment
 from sklearn.metrics import f1_score
-
+import torch
+from torch.optim import AdamW
 
 @dataclasses.dataclass
 class TextClassification:
@@ -47,6 +48,7 @@ class TextClassification:
     push_to_hub: bool = True
     hub_private_repo: bool = True
     report_to: str = "all"  # comet_ml
+    tokenizer_max_length:int= 1024
 
     # EVALUATION #
     def reinit(self):
@@ -149,7 +151,7 @@ class TextClassification:
     def preprocess_function(self, examples, tokenizer, text_col):
         examples = examples[text_col].lower() if self.uncase else examples[text_col]
         return tokenizer(examples,
-                         truncation=True)
+                         truncation=True, max_length=self.tokenizer_max_length)
 
     def tokenize_data(self):
         print(type(self.dataset))
@@ -191,7 +193,8 @@ class TextClassification:
             do_eval=True,
             do_predict=True,
             do_train=True,
-            run_name=self.output_dir
+            run_name=self.output_dir,
+            optim="adamw_torch"
         )
 
     def init_trainer(self):
