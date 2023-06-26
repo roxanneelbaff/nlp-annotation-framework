@@ -48,7 +48,8 @@ class TextClassification:
     push_to_hub: bool = True
     hub_private_repo: bool = True
     report_to: str = "all"  # comet_ml
-    tokenizer_max_length:int= 1024
+    tokenizer_max_length: int = 1024
+    tokenizer_padding: 'bool|str' = True  # max length per batch
 
     # EVALUATION #
     def reinit(self):
@@ -151,7 +152,9 @@ class TextClassification:
     def preprocess_function(self, examples, tokenizer, text_col):
         examples = examples[text_col].lower() if self.uncase else examples[text_col]
         return tokenizer(examples,
-                         truncation=True, max_length=self.tokenizer_max_length)
+                         truncation=True,
+                         max_length=self.tokenizer_max_length,
+                         padding=self.tokenizer_padding) # 'max_length', 'longest', True
 
     def tokenize_data(self):
         print(type(self.dataset))
