@@ -17,6 +17,8 @@ from comet_ml import Experiment
 from sklearn.metrics import f1_score
 import torch
 from torch.optim import AdamW
+import torch
+
 
 @dataclasses.dataclass
 class TextClassification:
@@ -50,7 +52,7 @@ class TextClassification:
     report_to: str = "all"  # comet_ml
     tokenizer_max_length: int = 1024
     tokenizer_padding: 'bool|str' = True  # max length per batch
-
+    use_gpu:bool = True
     # EVALUATION #
     def reinit(self):
         print("Loading dataset")
@@ -177,6 +179,11 @@ class TextClassification:
             id2label=self.id2label,
             label2id=self.label2id
         )
+
+        if self.use_gpu:
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            print(f"asked to move to GPU - Gpu exist? {torch.cuda.is_available()}")
+            self.model = self.model.to(device)  # move model to GPU
 
     def set_training_args(self):
         self.training_args = TrainingArguments(
