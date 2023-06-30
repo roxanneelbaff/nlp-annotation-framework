@@ -76,6 +76,8 @@ class TextClassification:
     tokenizer_padding: 'bool|str' = True  # max length per batch
     use_gpu: bool = True
     optimizer: str = "adamw_torch"
+    tokenizer_special_tokens: dict = None
+    is_fp16: bool = True
 
     # EVALUATION #
     def reinit(self):
@@ -86,7 +88,8 @@ class TextClassification:
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.pretrained_model_name
             )
-
+        if self.tokenizer_special_tokens is not None:
+            self.tokenizer.add_special_tokens(self.tokenizer_special_tokens)
         print("Tokenizing Data")
         self.tokenize_data()
 
@@ -232,6 +235,7 @@ class TextClassification:
             run_name=self.output_dir,
             optim=self.optimizer,
             log_level="error",
+            fp16=self.is_fp16
         )
 
     def init_trainer(self):
