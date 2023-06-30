@@ -77,7 +77,8 @@ class TextClassification:
     use_gpu: bool = True
     optimizer: str = "adamw_torch"
     tokenizer_special_tokens: dict = None
-    is_fp16: bool = True
+    is_fp16: bool = False
+    gradient_accumulation_steps: int =1
 
     # EVALUATION #
     def reinit(self):
@@ -235,7 +236,8 @@ class TextClassification:
             run_name=self.output_dir,
             optim=self.optimizer,
             log_level="error",
-            fp16=self.is_fp16
+            fp16=self.is_fp16,
+            gradient_accumulation_steps=self.gradient_accumulation_steps
         )
 
     def init_trainer(self):
