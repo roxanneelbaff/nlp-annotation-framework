@@ -78,7 +78,8 @@ class TextClassification:
     optimizer: str = "adamw_torch"
     tokenizer_special_tokens: dict = None
     is_fp16: bool = False
-    gradient_accumulation_steps: int =1
+    gradient_accumulation_steps: int = 1,
+    gradient_checkpointing: bool = False
 
     # EVALUATION #
     def reinit(self):
@@ -180,7 +181,9 @@ class TextClassification:
                                       **extra_params)
 
     def preprocess_function(self, examples, tokenizer, text_col):
-        examples = examples[text_col].lower() if self.uncase else examples[text_col]
+        #examples = examples[text_col].lower() if self.uncase else examples[text_col]
+        #torch.autograd.profiler
+        examples["text"] = [text.lower() for text in examples["text"]]
         return tokenizer(examples,
                          truncation=True,
                          max_length=self.tokenizer_max_length,
@@ -194,7 +197,7 @@ class TextClassification:
                 "tokenizer": self.tokenizer,
                 "text_col": self.text_col
                 },
-            batched=False)
+            batched=True)
         return self.tokenized_data
 
     def set_data_collator(self):
@@ -237,7 +240,8 @@ class TextClassification:
             optim=self.optimizer,
             log_level="error",
             fp16=self.is_fp16,
-            gradient_accumulation_steps=self.gradient_accumulation_steps
+            gradient_accumulation_steps=self.gradient_accumulation_steps,
+            gradient_checkpointing=self.gradient_checkpointing
         )
 
     def init_trainer(self):
