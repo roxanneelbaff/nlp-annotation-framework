@@ -58,6 +58,7 @@ class TextClassification:
     is_fp16: bool = False
     gradient_accumulation_steps: int = 1,
     gradient_checkpointing: bool = False
+    tokenizer_special_tokens: dict = None
 
     # EVALUATION #
     def reinit(self):
@@ -68,8 +69,7 @@ class TextClassification:
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.pretrained_model_name
             )
-        if self.tokenizer_special_tokens is not None:
-            self.tokenizer.add_special_tokens(self.tokenizer_special_tokens)
+
         print("Tokenizing Data")
         self.tokenize_data()
 
@@ -243,7 +243,7 @@ class TextClassification:
             print("score:", score)
         except Exception:
             print("Failed to push to hub")
-        print_summary(result)
+        # print_summary(result)
         return self.trainer
 
     # POST TRAINING
