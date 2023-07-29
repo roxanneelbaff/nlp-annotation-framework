@@ -19,28 +19,6 @@ import torch
 from torch.optim import AdamW
 import torch
 
-from pynvml import *
-
-
-def print_gpu_utilization():
-    """
-    Source code from https://huggingface.co/docs/transformers/perf_train_gpu_one
-    """
-    nvmlInit()
-    handle = nvmlDeviceGetHandleByIndex(0)
-    info = nvmlDeviceGetMemoryInfo(handle)
-    print(f"GPU memory occupied: {info.used//1024**2} MB.")
-
-
-def print_summary(result):
-    """
-    Source code from https://huggingface.co/docs/transformers/perf_train_gpu_one
-    """
-
-    print(f"Time: {result.metrics['train_runtime']:.2f}")
-    print(f"Samples/second: {result.metrics['train_samples_per_second']:.2f}")
-    print_gpu_utilization()
-
 
 @dataclasses.dataclass
 class TextClassification:
@@ -76,6 +54,10 @@ class TextClassification:
     tokenizer_padding: 'bool|str' = True  # max length per batch
     use_gpu: bool = True
     optimizer: str = "adamw_torch"
+    tokenizer_special_tokens: dict = None
+    is_fp16: bool = False
+    gradient_accumulation_steps: int = 1,
+    gradient_checkpointing: bool = False
 
     # EVALUATION #
     def reinit(self):
@@ -86,7 +68,8 @@ class TextClassification:
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.pretrained_model_name
             )
-
+        if self.tokenizer_special_tokens is not None:
+            self.tokenizer.add_special_tokens(self.tokenizer_special_tokens)
         print("Tokenizing Data")
         self.tokenize_data()
 
@@ -176,7 +159,10 @@ class TextClassification:
                                       **extra_params)
 
     def preprocess_function(self, examples, tokenizer, text_col):
-        examples = examples[text_col].lower() if self.uncase else examples[text_col]
+        #examples = examples[text_col].lower() if self.uncase else examples[text_col]
+        #torch.autograd.profiler
+        if self.uncase:
+            examples["text"] = [text.lower() for text in examples["text"]]
         return tokenizer(examples,
                          truncation=True,
                          max_length=self.tokenizer_max_length,
@@ -190,7 +176,7 @@ class TextClassification:
                 "tokenizer": self.tokenizer,
                 "text_col": self.text_col
                 },
-            batched=False)
+            batched=True)
         return self.tokenized_data
 
     def set_data_collator(self):
@@ -206,10 +192,10 @@ class TextClassification:
 
         if self.use_gpu:
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-            print_gpu_utilization()
+            #print_gpu_utilization()
             print(f"asked to move to GPU - Gpu exist? {torch.cuda.is_available()}")
             self.model = self.model.to(device)  # move model to GPU
-            print_gpu_utilization()
+            #print_gpu_utilization()
 
     def set_training_args(self):
         self.training_args = TrainingArguments(
@@ -232,6 +218,9 @@ class TextClassification:
             run_name=self.output_dir,
             optim=self.optimizer,
             log_level="error",
+            fp16=self.is_fp16,
+            gradient_accumulation_steps=self.gradient_accumulation_steps,
+            gradient_checkpointing=self.gradient_checkpointing
         )
 
     def init_trainer(self):
