@@ -58,7 +58,8 @@ def _siginificance_calculated(filename):
 
 
 def significance(
-    original_df, features=None, filename="", independent_var="cluster"
+    original_df, features=None, filename="", independent_var="cluster",
+    p_value_threshold: float = 0.05
 ):
     result = []
     warnings.filterwarnings("ignore")
@@ -72,6 +73,8 @@ def significance(
     # to save the data
     row = "feature;is_normal (shapiro);is_homogeneous (levene);p_value;is_significant;effect;result"
     # all pairs
+    original_df = original_df.sort_values(by=[independent_var],
+                                          ascending=True)
     pairs = list(
         itertools.combinations(original_df[independent_var].unique(), 2)
     )
@@ -81,7 +84,7 @@ def significance(
     row += "\n"
 
     # thresholds
-    p_value_threshold = 0.05
+    
     bonforrini_threshold = p_value_threshold / len(pairs)
     print("bonforrini_threshold: ", bonforrini_threshold)
 
@@ -109,7 +112,7 @@ def significance(
                         if stats.shapiro(v)[1] < 0.05:  # not normal
                             is_all_normal = False
                             break
-                except Warning as w:
+                except Warning:
                     is_all_normal = False
 
                 # LEVENE FOR HOMOGENEITY
@@ -124,7 +127,7 @@ def significance(
                 effect_interpretation = ""
 
                 # sig TESTS FOR EACH FEATURE
-                if is_all_normal and is_homogeneous:
+                if is_all_normal and is_homogeneous and len(pairs) > 1:
                     # stat, p_val= stats.f_oneway(no_effect_feat, empowering_feat, challenging_feat, na_feat)
                     anova_result = ols(
                         feature + " ~ C(" + independent_var + ")", data=df
@@ -158,8 +161,9 @@ def significance(
                         )
                     )
 
-                else:
+                elif len(pairs) > 1:
                     stat, p_val = stats.kruskal(*groups.values())  # , na_feat)
+                
 
                 # POST HOC
 
@@ -171,6 +175,7 @@ def significance(
                 pairs_results = ""
                 result_row = {}
                 result_row["feature"] = feature
+                print(f"There are {len(pairs)} pairs")
                 for pair in pairs:
                     try:
                         sample1 = list(
@@ -191,6 +196,9 @@ def significance(
                                 sample1, sample2, alternative="two-sided"
                             )
                         )
+                        if len(pairs) == 1:
+                            stat = pair_stat
+                            p_val = pair_p_val
 
                         pair_effect_size = ""
                         pair_effect_size_num = float("nan")

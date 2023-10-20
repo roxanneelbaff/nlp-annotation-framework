@@ -21,8 +21,6 @@ import matplotlib.colors as mcolors
 import nlpaf as config
 
 import os
-
-
 class topic_modeler:
     def __init__(self, data, stopwords_extension=[], lang="english"):
         self.data = data
