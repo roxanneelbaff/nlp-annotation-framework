@@ -1,7 +1,7 @@
 from spacy_arguing_lexicon import ArguingLexiconParser
 
 from spacy.language import Language
-from spacy.tokens import Token, Span, Doc
+from spacy.tokens import  Doc
 
 from transformers.utils import logging
 

@@ -48,7 +48,7 @@ class Pipeline(ABC):
         the database.
 
         """
-
+        print(f"spacy.prefer_gpu() {spacy.prefer_gpu()}")
         self.registered_pipes = self._load_registered_pipes(
             load_default_pipe_configs, extended_pipe_configs
         )

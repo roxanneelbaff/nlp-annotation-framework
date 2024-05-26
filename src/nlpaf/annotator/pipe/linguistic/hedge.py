@@ -4,7 +4,6 @@ from spacy.language import Language
 from spacy.tokens import Doc
 from transformers.utils import logging
 import nlpaf.utils as utils
-from nlpaf.util.timer import Timer
 
 
 @Language.factory("hedge_component")
